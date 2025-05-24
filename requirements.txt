@@ -1,0 +1,8 @@
+qiskit
+qiskit-aer
+matplotlib
+anthropic
+tqdm
+pandas
+tabulate
+seaborn

@@ -1,0 +1,31 @@
+{
+  "problem_id": "grover_2qubit_marked_state",
+  "problem_description": "Implement Grover's search algorithm for a 2-qubit system to find a marked state |11⟩.",
+  "difficulty": "intermediate",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Understanding Grover's algorithm components",
+    "Oracle construction for specific marked states",
+    "Amplitude amplification mechanics"
+  ],
+  "prerequisites": [
+    "Basic quantum gates",
+    "Quantum superposition",
+    "Basic Qiskit syntax"
+  ],
+  "solutions": [
+    {
+      "preference_rank": 1,
+      "code": "\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import Aer\n\ndef create_grover_circuit():\n    # Initialize circuit\n    qr = QuantumRegister(2, 'q')\n    cr = ClassicalRegister(2, 'c')\n    circuit = QuantumCircuit(qr, cr)\n    \n    # Initial Hadamard gates\n    circuit.h(qr)\n    \n    # Oracle for |11⟩\n    circuit.x(qr[0])\n    circuit.x(qr[1])\n    circuit.h(qr[1])\n    circuit.cx(qr[0], qr[1])\n    circuit.h(qr[1])\n    circuit.x(qr[0])\n    circuit.x(qr[1])\n    \n    # Diffusion operator\n    circuit.h(qr)\n    circuit.x(qr)\n    circuit.h(qr[1])\n    circuit.cx(qr[0], qr[1])\n    circuit.h(qr[1])\n    circuit.x(qr)\n    circuit.h(qr)\n    \n    # Measurement\n    circuit.measure(qr, cr)\n    \n    return circuit\n\n# Execute circuit\ncircuit = create_grover_circuit()\nbackend = Aer.get_backend('qasm_simulator')\njob = backend.run(circuit, shots=1000)\nresult = job.result()\ncounts = result.get_counts()\n",
+      "expected_output": "{'11': 1000}",
+      "output_interpretation": "High frequency of |11⟩ measurements indicates successful search."
+    }
+  ],
+  "common_mistakes": [
+    {
+      "incorrect_code": "\n# Incorrect oracle implementation\ncircuit.x(qr)\ncircuit.cz(qr[0], qr[1])\ncircuit.x(qr)\n",
+      "error_type": "conceptual_misunderstanding",
+      "explanation": "This oracle only applies phase to |00⟩ instead of |11⟩."
+    }
+  ]
+}

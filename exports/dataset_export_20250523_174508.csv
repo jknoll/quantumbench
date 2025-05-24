@@ -1,0 +1,69 @@
+problem_id,problem_description,difficulty,category,learning_objectives,prerequisites,reasoning_problem_analysis,reasoning_quantum_physics_reasoning,reasoning_algorithm_choice,reasoning_parameter_selection,reasoning_implementation_strategy,entry_type,preference_rank,code,expected_output,output_interpretation,why_less_preferred,code_reasoning_structure_choice,code_reasoning_gate_implementation,code_reasoning_optimization_decisions,code_reasoning_measurement_strategy,error_type,debugging_reasoning
+grover_2qubit,"Implement Grover's algorithm to find a marked item in a 2-qubit system where the marked state is |11⟩. Include the oracle construction, diffusion operator, and proper number of iterations.",intermediate,quantum_algorithms,Grover's algorithm implementation; Oracle construction; Quantum amplitude amplification; Circuit composition,Basic quantum gates; Linear algebra; Quantum superposition; Phase kickback,"For a 2-qubit system with N=4 states, we need to find |11⟩ using Grover's algorithm. The optimal number of iterations is π/4 * sqrt(N/M) ≈ 1 for M=1 marked state.","The oracle marks the target state by applying a phase flip (-1) to |11⟩. The diffusion operator performs reflection about the mean by applying H⊗n, followed by a controlled-Z about |00⟩, then H⊗n again.","Grover's algorithm is optimal for unstructured search, providing quadratic speedup. For 2 qubits, we need only 1 iteration to achieve maximum probability of measuring the marked state.","With N=4 states and M=1 marked state, optimal iterations = round(π/4 * sqrt(4/1)) = 1. This maximizes amplitude of target state while avoiding over-rotation.",1. Initialize qubits in uniform superposition with H gates. 2. Apply oracle using multi-controlled-Z. 3. Apply diffusion operator. 4. Measure both qubits.,solution,1,"from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, execute, Aer
+
+def create_grover_circuit():
+    qr = QuantumRegister(2, 'q')
+    cr = ClassicalRegister(2, 'c')
+    circuit = QuantumCircuit(qr, cr)
+    
+    # Initialize superposition
+    circuit.h(qr)
+    
+    # Oracle for |11⟩
+    circuit.cz(qr[0], qr[1])
+    
+    # Diffusion operator
+    circuit.h(qr)
+    circuit.x(qr)
+    circuit.cz(qr[0], qr[1])
+    circuit.x(qr)
+    circuit.h(qr)
+    
+    # Measure
+    circuit.measure(qr, cr)
+    return circuit
+
+# Execute
+circuit = create_grover_circuit()
+simulator = Aer.get_backend('qasm_simulator')
+result = execute(circuit, simulator, shots=1000).result()
+counts = result.get_counts()",{'11': ~1000},"Should see measurements of |11⟩ state with very high probability (>95%), demonstrating successful amplitude amplification.",,"Circuit is organized into clear initialization, oracle, diffusion, and measurement sections for readability and modularity.",CZ gate used for oracle as it's native to many devices. Diffusion uses X and CZ gates to create reflection about mean.,Implementation minimizes circuit depth by using CZ directly rather than decomposing into CNOT and phase gates.,Measure both qubits to verify we obtain |11⟩ with high probability (~100% theoretically).,,
+grover_2qubit,"Implement Grover's algorithm to find a marked item in a 2-qubit system where the marked state is |11⟩. Include the oracle construction, diffusion operator, and proper number of iterations.",intermediate,quantum_algorithms,Grover's algorithm implementation; Oracle construction; Quantum amplitude amplification; Circuit composition,Basic quantum gates; Linear algebra; Quantum superposition; Phase kickback,"For a 2-qubit system with N=4 states, we need to find |11⟩ using Grover's algorithm. The optimal number of iterations is π/4 * sqrt(N/M) ≈ 1 for M=1 marked state.","The oracle marks the target state by applying a phase flip (-1) to |11⟩. The diffusion operator performs reflection about the mean by applying H⊗n, followed by a controlled-Z about |00⟩, then H⊗n again.","Grover's algorithm is optimal for unstructured search, providing quadratic speedup. For 2 qubits, we need only 1 iteration to achieve maximum probability of measuring the marked state.","With N=4 states and M=1 marked state, optimal iterations = round(π/4 * sqrt(4/1)) = 1. This maximizes amplitude of target state while avoiding over-rotation.",1. Initialize qubits in uniform superposition with H gates. 2. Apply oracle using multi-controlled-Z. 3. Apply diffusion operator. 4. Measure both qubits.,solution,2,"from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, execute, Aer
+
+def create_grover_circuit_alt():
+    qr = QuantumRegister(2, 'q')
+    cr = ClassicalRegister(2, 'c')
+    circuit = QuantumCircuit(qr, cr)
+    
+    # Initialize superposition
+    circuit.h(qr)
+    
+    # Oracle for |11⟩ using CNOTs and phase
+    circuit.x(qr)
+    circuit.h(qr[1])
+    circuit.cnot(qr[0], qr[1])
+    circuit.h(qr[1])
+    circuit.x(qr)
+    
+    # Diffusion operator
+    circuit.h(qr)
+    circuit.x(qr)
+    circuit.h(qr[1])
+    circuit.cnot(qr[0], qr[1])
+    circuit.h(qr[1])
+    circuit.x(qr)
+    circuit.h(qr)
+    
+    # Measure
+    circuit.measure(qr, cr)
+    return circuit",{'11': ~1000},Same expected results but with potentially more noise on real hardware due to longer circuit.,"Uses more gates than necessary, increasing circuit depth and potential for errors. Less hardware-efficient than direct CZ implementation.",Similar structure but implements oracle and diffusion using more basic gates.,Uses CNOT and H gates to construct equivalent operations to CZ.,Less optimal due to higher gate count and circuit depth.,Same measurement approach as preferred solution.,,
+grover_2qubit,"Implement Grover's algorithm to find a marked item in a 2-qubit system where the marked state is |11⟩. Include the oracle construction, diffusion operator, and proper number of iterations.",intermediate,quantum_algorithms,Grover's algorithm implementation; Oracle construction; Quantum amplitude amplification; Circuit composition,Basic quantum gates; Linear algebra; Quantum superposition; Phase kickback,"For a 2-qubit system with N=4 states, we need to find |11⟩ using Grover's algorithm. The optimal number of iterations is π/4 * sqrt(N/M) ≈ 1 for M=1 marked state.","The oracle marks the target state by applying a phase flip (-1) to |11⟩. The diffusion operator performs reflection about the mean by applying H⊗n, followed by a controlled-Z about |00⟩, then H⊗n again.","Grover's algorithm is optimal for unstructured search, providing quadratic speedup. For 2 qubits, we need only 1 iteration to achieve maximum probability of measuring the marked state.","With N=4 states and M=1 marked state, optimal iterations = round(π/4 * sqrt(4/1)) = 1. This maximizes amplitude of target state while avoiding over-rotation.",1. Initialize qubits in uniform superposition with H gates. 2. Apply oracle using multi-controlled-Z. 3. Apply diffusion operator. 4. Measure both qubits.,common_mistake,,"# Missing phase flip in oracle
+circuit.x(qr)
+circuit.cnot(qr[0], qr[1])
+circuit.x(qr)",Error expected,"Oracle must apply phase flip (-1) to marked state, not just identify it. This implementation only marks the state without phase kickback.",,,,,,conceptual_misunderstanding,Test oracle separately by applying it to |11⟩ state and verifying phase flip occurs. Can visualize state vector to confirm.
+grover_2qubit,"Implement Grover's algorithm to find a marked item in a 2-qubit system where the marked state is |11⟩. Include the oracle construction, diffusion operator, and proper number of iterations.",intermediate,quantum_algorithms,Grover's algorithm implementation; Oracle construction; Quantum amplitude amplification; Circuit composition,Basic quantum gates; Linear algebra; Quantum superposition; Phase kickback,"For a 2-qubit system with N=4 states, we need to find |11⟩ using Grover's algorithm. The optimal number of iterations is π/4 * sqrt(N/M) ≈ 1 for M=1 marked state.","The oracle marks the target state by applying a phase flip (-1) to |11⟩. The diffusion operator performs reflection about the mean by applying H⊗n, followed by a controlled-Z about |00⟩, then H⊗n again.","Grover's algorithm is optimal for unstructured search, providing quadratic speedup. For 2 qubits, we need only 1 iteration to achieve maximum probability of measuring the marked state.","With N=4 states and M=1 marked state, optimal iterations = round(π/4 * sqrt(4/1)) = 1. This maximizes amplitude of target state while avoiding over-rotation.",1. Initialize qubits in uniform superposition with H gates. 2. Apply oracle using multi-controlled-Z. 3. Apply diffusion operator. 4. Measure both qubits.,validation_test,,"from qiskit.quantum_info import Statevector
+
+circuit = create_grover_circuit()
+statevector = Statevector.from_instruction(circuit)
+prob_11 = statevector.probabilities()[3]  # |11⟩ is fourth state
+assert prob_11 > 0.95",Probability of |11⟩ should be >95%,Verify probability of measuring |11⟩ state is close to 1,,,,,,,

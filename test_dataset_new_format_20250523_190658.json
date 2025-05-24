@@ -1,0 +1,63 @@
+{
+  "problem_id": "test_grover_2qubit",
+  "problem_description": "Test implementation of Grover's algorithm for 2-qubit system targeting |11⟩ state.",
+  "difficulty": "intermediate",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Grover's algorithm implementation",
+    "Oracle construction"
+  ],
+  "prerequisites": [
+    "Basic quantum gates",
+    "Quantum superposition"
+  ],
+  "reasoning_trace": {
+    "problem_analysis": "For 2-qubit system, need to search for |11⟩ state with optimal iterations.",
+    "quantum_physics_reasoning": "Grover's algorithm amplifies target state amplitude through oracle and diffusion.",
+    "algorithm_choice": "Standard Grover's algorithm optimal for unstructured search.",
+    "parameter_selection": "Optimal iterations = floor(π/4 * sqrt(N/M)) ≈ 1 for N=4, M=1",
+    "implementation_strategy": "Initialize superposition, apply oracle+diffusion, measure."
+  },
+  "solutions": [
+    {
+      "preference_rank": 1,
+      "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\n\ndef create_grover_2qubit():\n    qr = QuantumRegister(2, 'q')\n    cr = ClassicalRegister(2, 'c')\n    qc = QuantumCircuit(qr, cr)\n    \n    # Initialize superposition\n    qc.h(qr)\n    \n    # Oracle for |11⟩\n    qc.cz(qr[0], qr[1])\n    \n    # Diffusion operator\n    qc.h(qr)\n    qc.x(qr)\n    qc.cz(qr[0], qr[1])\n    qc.x(qr)\n    qc.h(qr)\n    \n    # Measure\n    qc.measure(qr, cr)\n    return qc\n\n# Execute\ncircuit = create_grover_2qubit()\nsimulator = AerSimulator()\ntranspiled_circuit = transpile(circuit, simulator)\njob = simulator.run(transpiled_circuit, shots=1000)\nresult = job.result()\ncounts = result.get_counts()\nprint(counts)",
+      "code_reasoning": {
+        "structure_choice": "Modular function design for clarity",
+        "gate_implementation": "CZ gate for oracle, standard diffusion pattern",
+        "optimization_decisions": "Minimal gate count for 2-qubit system",
+        "measurement_strategy": "Direct measurement of both qubits"
+      },
+      "expected_output": "{'11': ~1000}",
+      "output_interpretation": "High probability of |11⟩ confirms successful Grover's implementation"
+    }
+  ],
+  "common_mistakes": [
+    {
+      "incorrect_code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\n\ndef create_grover_2qubit():\n    qr = QuantumRegister(2, 'q')\n    cr = ClassicalRegister(2, 'c')\n    qc = QuantumCircuit(qr, cr)\n    \n    # Initialize superposition\n    qc.h(qr)\n    \n    # WRONG: Oracle marks |00⟩ instead of |11⟩\n    qc.x(qr)  # Flip to make |11⟩ -> |00⟩\n    qc.cz(qr[0], qr[1])  # This now marks |00⟩\n    qc.x(qr)  # Flip back\n    \n    # Diffusion operator  \n    qc.h(qr)\n    qc.x(qr)\n    qc.cz(qr[0], qr[1])\n    qc.x(qr)\n    qc.h(qr)\n    \n    # Measure\n    qc.measure(qr, cr)\n    return qc\n\n# Execute\ncircuit = create_grover_2qubit()\nsimulator = AerSimulator()\ntranspiled_circuit = transpile(circuit, simulator)\njob = simulator.run(transpiled_circuit, shots=1000)\nresult = job.result()\ncounts = result.get_counts()\nprint(counts)",
+      "error_type": "conceptual_misunderstanding",
+      "explanation": "The oracle marks |00⟩ instead of the intended |11⟩ state due to incorrect X gate placement.",
+      "debugging_reasoning": "Check which state the oracle actually marks by tracing through the gate operations. The X gates transform |11⟩ to |00⟩ before applying CZ.",
+      "expected_output": "{'00': ~1000}"
+    },
+    {
+      "incorrect_code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\n\ndef create_grover_2qubit():\n    qr = QuantumRegister(2, 'q')\n    cr = ClassicalRegister(2, 'c')\n    qc = QuantumCircuit(qr, cr)\n    \n    # Initialize superposition\n    qc.h(qr)\n    \n    # Oracle for |11⟩\n    qc.cz(qr[0], qr[1])\n    \n    # WRONG: Missing diffusion operator - algorithm won't work!\n    # qc.h(qr)\n    # qc.x(qr) \n    # qc.cz(qr[0], qr[1])\n    # qc.x(qr)\n    # qc.h(qr)\n    \n    # Measure\n    qc.measure(qr, cr)\n    return qc\n\n# Execute\ncircuit = create_grover_2qubit()\nsimulator = AerSimulator()\ntranspiled_circuit = transpile(circuit, simulator)\njob = simulator.run(transpiled_circuit, shots=1000)\nresult = job.result()\ncounts = result.get_counts()\nprint(counts)",
+      "error_type": "bug",
+      "explanation": "Missing diffusion operator means the algorithm doesn't amplify the marked state. Oracle alone just adds a phase.",
+      "debugging_reasoning": "Grover's algorithm requires both oracle AND diffusion operator. Without diffusion, there's no amplitude amplification.",
+      "expected_output": "{'00': ~250, '01': ~250, '10': ~250, '11': ~250}"
+    }
+  ],
+  "validation_tests": [
+    {
+      "test_description": "Verify |11⟩ has high probability",
+      "test_code": "assert counts.get('11', 0) > 800, f'Expected high |11⟩ count, got {counts}'",
+      "expected_test_result": "Should pass for correct implementation"
+    }
+  ],
+  "extensions": [
+    "Extend to 3-qubit system",
+    "Multiple marked states",
+    "Variable iteration counts"
+  ]
+}

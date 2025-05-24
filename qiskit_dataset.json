@@ -1,0 +1,73 @@
+{
+  "problem_id": "grover_2qubit",
+  "problem_description": "Implement Grover's algorithm to search for a marked item in a 2-qubit system. The marked state should be |11⟩. Include the oracle construction, diffusion operator, and measurement.",
+  "difficulty": "intermediate",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Grover's algorithm implementation",
+    "Oracle construction",
+    "Quantum state amplification",
+    "Multi-qubit circuit construction"
+  ],
+  "prerequisites": [
+    "Basic quantum gates",
+    "Linear algebra",
+    "Quantum superposition",
+    "Phase kickback"
+  ],
+  "reasoning_trace": {
+    "problem_analysis": "For a 2-qubit system with N=4 states, Grover's algorithm requires π/4 ≈ 1 iteration. The oracle must mark state |11⟩ with a phase flip, followed by the diffusion operator for amplitude amplification.",
+    "quantum_physics_reasoning": "The algorithm works by phase inversion of the marked state and reflection about the mean amplitude. For 2 qubits, we start in uniform superposition with amplitude 1/2 for each basis state. After one iteration, the marked state amplitude should increase to near 1.",
+    "algorithm_choice": "Standard Grover's algorithm is optimal for unstructured search. For 2 qubits, we need a phase oracle using Z and control gates, plus the standard diffusion operator constructed from H gates and a multi-controlled Z.",
+    "parameter_selection": "Number of iterations = floor(π/4 * sqrt(N/M)) = floor(π/4 * sqrt(4/1)) ≈ 1, where N=4 (total states) and M=1 (marked states)",
+    "implementation_strategy": "1. Initialize qubits to |+⟩ state with H gates\n2. Construct oracle for |11⟩ using CZ gate\n3. Implement diffusion with H gates and multi-controlled Z\n4. Measure both qubits"
+  },
+  "solutions": [
+    {
+      "preference_rank": 1,
+      "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, execute, Aer\n\ndef create_grover_2qubit():\n    qr = QuantumRegister(2, 'q')\n    cr = ClassicalRegister(2, 'c')\n    circuit = QuantumCircuit(qr, cr)\n    \n    # Initialize with Hadamard gates\n    circuit.h(qr)\n    \n    # Oracle for |11⟩\n    circuit.cz(qr[0], qr[1])\n    \n    # Diffusion operator\n    circuit.h(qr)\n    circuit.x(qr)\n    circuit.cz(qr[0], qr[1])\n    circuit.x(qr)\n    circuit.h(qr)\n    \n    # Measurement\n    circuit.measure(qr, cr)\n    \n    return circuit\n\n# Execute\ncircuit = create_grover_2qubit()\nsimulator = Aer.get_backend('qasm_simulator')\nresult = execute(circuit, simulator, shots=1000).result()\ncounts = result.get_counts()",
+      "code_reasoning": {
+        "structure_choice": "Circuit is organized into clear initialization, oracle, diffusion, and measurement sections for readability and modularity",
+        "gate_implementation": "CZ gate chosen for oracle as it's more efficient than CNOT-Z-CNOT combination. Diffusion operator uses standard construction with minimal depth",
+        "optimization_decisions": "Direct CZ implementation reduces gate count compared to equivalent constructions using other gates",
+        "measurement_strategy": "Measure both qubits to verify we find |11⟩ with high probability"
+      },
+      "expected_output": "{'11': ~1000} (majority of shots should show '11')",
+      "output_interpretation": "Success is indicated by measuring |11⟩ with probability close to 1, showing the algorithm has amplified the correct state"
+    },
+    {
+      "preference_rank": 2,
+      "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, execute, Aer\n\ndef create_grover_2qubit_alternative():\n    qr = QuantumRegister(2, 'q')\n    cr = ClassicalRegister(2, 'c')\n    circuit = QuantumCircuit(qr, cr)\n    \n    # Initialize\n    circuit.h(qr)\n    \n    # Oracle using CNOT and Z\n    circuit.cx(qr[0], qr[1])\n    circuit.z(qr[1])\n    circuit.cx(qr[0], qr[1])\n    \n    # Diffusion with explicit matrix multiplication\n    circuit.h(qr)\n    circuit.x(qr)\n    circuit.h(qr[1])\n    circuit.cx(qr[0], qr[1])\n    circuit.h(qr[1])\n    circuit.x(qr)\n    circuit.h(qr)\n    \n    circuit.measure(qr, cr)\n    \n    return circuit",
+      "code_reasoning": {
+        "structure_choice": "Similar structure but with more explicit gate decomposition",
+        "gate_implementation": "Uses CNOT and Z gates instead of CZ, showing alternative construction",
+        "optimization_decisions": "Less optimal due to higher gate count but more explicit construction",
+        "measurement_strategy": "Same measurement approach as preferred solution"
+      },
+      "expected_output": "{'11': ~1000}",
+      "output_interpretation": "Should give same results but with slightly lower fidelity on real hardware due to more gates",
+      "why_less_preferred": "Uses more gates than necessary, increasing circuit depth and potential for errors"
+    }
+  ],
+  "common_mistakes": [
+    {
+      "incorrect_code": "circuit.z(qr[0])\ncircuit.z(qr[1])",
+      "error_type": "conceptual_misunderstanding",
+      "explanation": "This oracle only applies phase flips independently, not creating the required entanglement for marking |11⟩",
+      "debugging_reasoning": "Test oracle separately by applying to |11⟩ state and verifying phase flip. Independent Z gates won't produce correct interference pattern."
+    }
+  ],
+  "validation_tests": [
+    {
+      "test_description": "Verify probability of measuring |11⟩ is close to 1",
+      "test_code": "from qiskit.quantum_info import Statevector\n\ncircuit = create_grover_2qubit()\ncircuit.remove_final_measurements()\nstatevector = Statevector.from_instruction(circuit)\nprob_11 = statevector.probabilities()[3]  # |11⟩ is index 3\nassert prob_11 > 0.95",
+      "expected_test_result": "Probability of |11⟩ should be > 0.95"
+    }
+  ],
+  "extensions": [
+    "Modify oracle to search for different marked states",
+    "Implement multiple iterations to see over-rotation effect",
+    "Add noise simulation to study algorithm robustness",
+    "Extend to 3 qubits with multiple marked states"
+  ]
+}

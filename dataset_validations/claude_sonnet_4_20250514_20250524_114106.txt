@@ -1,0 +1,93 @@
+DATASET VALIDATION RESULTS
+==================================================
+Validation executed at: 2025-05-24T11:54:51.290119
+Dataset source: datasets/claude_sonnet_4_20250514_20250524_114106/1.json
+Source type: Single file
+Dataset model: claude_sonnet_4_20250514
+Dataset timestamp: 20250524_114106
+
+SOLUTIONS VALIDATION RESULTS
+==================================================
+Expected: All solutions should compile, execute, and produce correct outputs
+
++-----------------------------+-------------------+-----------------+-----------------+--------------+-------------------+
+| Problem ID                  |   Preference Rank | Code Executed   | Outputs Match   | RMSE Error   | Execution Error   |
++=============================+===================+=================+=================+==============+===================+
+| grover_3qubit_marked_states |                 1 | ✓               | ✓               | N/A          | None              |
++-----------------------------+-------------------+-----------------+-----------------+--------------+-------------------+
+
+SOLUTIONS SUMMARY:
+Total solutions: 1
+Successfully executed: 1/1 (100.0%)
+Correct outputs: 1/1 (100.0% of executed)
+
+OVERALL VALIDATION STATISTICS
+================================================================================
+SOLUTIONS:
+  Total solutions: 1
+  Successfully executed: 1/1 (100.0%)
+  Correct outputs: 1/1 (100.0% of executed)
+================================================================================
+
+DETAILED VALIDATION RESULTS
+==================================================
+
+1. SOLUTION - Rank 1
+   Problem ID: grover_3qubit_marked_states
+   Executed: ✓
+   Expected: Circuit depth: 21
+Gate count: {'h': 18, 'x': 12, 'ccz': 6, 'barrier': 6, 'measure': 3}
+
+Theoretical Analysis:
+  Initial amplitude: 0.354
+  Final amplitude for |101⟩: 0.946
+  Final probability for |101⟩: 0.894
+
+Simulation Results:
+Measurement Results (probability):
+  |000⟩: 0.016
+  |001⟩: 0.016
+  |010⟩: 0.016
+  |011⟩: 0.016
+  |100⟩: 0.016
+  |101⟩: 0.894
+  |110⟩: 0.016
+  |111⟩: 0.016
+
+Target state |101⟩ probability: 0.894
+Theoretical optimal probability: ~0.894
+Classical random search probability: 0.125
+Quantum speedup factor: 7.15x
+
+Verification:
+✓ Algorithm working correctly - measured probability matches theory
+✓ Quantum speedup demonstrated
+   Actual:   Grover's Algorithm for 3-Qubit Search
+Target state: |101⟩
+Circuit depth: 18
+Gate count: OrderedDict({'x': 16, 'h': 15, 'barrier': 5, 'ccz': 4, 'measure': 3})
+Theoretical Analysis:
+  Initial amplitude: 0.354
+  Final amplitude for |101⟩: 0.972
+  Final probability for |101⟩: 0.945
+
+Simulation Results:
+Measurement Results (probability):
+  |000⟩: 0.008 (64 counts)
+  |001⟩: 0.007 (61 counts)
+  |010⟩: 0.008 (65 counts)
+  |011⟩: 0.009 (71 counts)
+  |100⟩: 0.008 (62 counts)
+  |101⟩: 0.947 (7755 counts)
+  |110⟩: 0.007 (59 counts)
+  |111⟩: 0.007 (55 counts)
+
+Target state |101⟩ probability: 0.947
+Theoretical optimal probability: ~0.894
+Classical random search probability: 0.125
+Quantum speedup factor: 7.57x
+
+Verification:
+✓ Algorithm working correctly - measured probability matches theory
+✓ Quantum speedup demonstrated
+   Match: ✓

@@ -1,0 +1,31 @@
+{
+  "common_mistakes": [
+    {
+      "mistake_id": "wrong_oracle_single_state",
+      "error_type": "conceptual_misunderstanding", 
+      "description": "Oracle only marks |111> instead of intended |101> and |110>",
+      "based_on_solution_rank": 1,
+      "incorrect_code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\nimport numpy as np\n\ndef create_grover_oracle(qc, qubits):\n    \"\"\"WRONG: Oracle that only marks |111> instead of |101> and |110>\"\"\"\n    # MISTAKE: This only flips |111>, not the intended states\n    qc.ccz(qubits[0], qubits[1], qubits[2])  # Only marks |111>\n\ndef create_diffusion_operator(qc, qubits):\n    \"\"\"Diffusion operator (inversion about average)\"\"\"\n    for qubit in qubits:\n        qc.h(qubit)\n    for qubit in qubits:\n        qc.x(qubit)\n    qc.ccz(qubits[0], qubits[1], qubits[2])\n    for qubit in qubits:\n        qc.x(qubit)\n    for qubit in qubits:\n        qc.h(qubit)\n\ndef grovers_algorithm():\n    qreg = QuantumRegister(3, 'q')\n    creg = ClassicalRegister(3, 'c')\n    qc = QuantumCircuit(qreg, creg)\n    \n    qc.h(qreg)\n    qc.barrier()\n    \n    optimal_iterations = int(np.round(np.pi/4 * np.sqrt(8/2)))\n    \n    for i in range(optimal_iterations):\n        create_grover_oracle(qc, qreg)\n        qc.barrier()\n        create_diffusion_operator(qc, qreg)\n        qc.barrier()\n    \n    qc.measure(qreg, creg)\n    return qc\n\n# Execute\ncircuit = grovers_algorithm()\nsimulator = AerSimulator()\ntranspiled_circuit = transpile(circuit, simulator)\njob = simulator.run(transpiled_circuit, shots=1024)\nresult = job.result()\ncounts = result.get_counts()\nprint(counts)",
+      "expected_incorrect_behavior": "Should show |111> with high probability instead of |101> and |110>",
+      "debugging_hint": "Check which state the oracle actually marks by analyzing the CCZ gate conditions"
+    },
+    {
+      "mistake_id": "too_many_iterations",
+      "error_type": "inefficiency",
+      "description": "Using too many Grover iterations causes overshoot",
+      "based_on_solution_rank": 1,
+      "incorrect_code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\nimport numpy as np\n\ndef create_grover_oracle(qc, qubits):\n    \"\"\"Oracle that marks states |101> and |110>\"\"\"\n    qc.x(qubits[1])\n    qc.ccz(qubits[2], qubits[1], qubits[0])\n    qc.x(qubits[1])\n    qc.x(qubits[0])\n    qc.ccz(qubits[2], qubits[1], qubits[0])\n    qc.x(qubits[0])\n\ndef create_diffusion_operator(qc, qubits):\n    \"\"\"Diffusion operator (inversion about average)\"\"\"\n    for qubit in qubits:\n        qc.h(qubit)\n    for qubit in qubits:\n        qc.x(qubit)\n    qc.ccz(qubits[0], qubits[1], qubits[2])\n    for qubit in qubits:\n        qc.x(qubit)\n    for qubit in qubits:\n        qc.h(qubit)\n\ndef grovers_algorithm():\n    qreg = QuantumRegister(3, 'q')\n    creg = ClassicalRegister(3, 'c')\n    qc = QuantumCircuit(qreg, creg)\n    \n    qc.h(qreg)\n    qc.barrier()\n    \n    # MISTAKE: Too many iterations - should be ~2, not 5\n    for i in range(5):  # Wrong: causes overshoot\n        create_grover_oracle(qc, qreg)\n        qc.barrier()\n        create_diffusion_operator(qc, qreg)\n        qc.barrier()\n    \n    qc.measure(qreg, creg)\n    return qc\n\n# Execute\ncircuit = grovers_algorithm()\nsimulator = AerSimulator()\ntranspiled_circuit = transpile(circuit, simulator)\njob = simulator.run(transpiled_circuit, shots=1024)\nresult = job.result()\ncounts = result.get_counts()\nprint(counts)",
+      "expected_incorrect_behavior": "Should show reduced probability for marked states due to overshoot",
+      "debugging_hint": "Calculate optimal iterations using π/4 * sqrt(N/M) formula"
+    },
+    {
+      "mistake_id": "missing_diffusion",
+      "error_type": "bug",
+      "description": "Grover iteration missing the diffusion operator",
+      "based_on_solution_rank": 1,
+      "incorrect_code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\nimport numpy as np\n\ndef create_grover_oracle(qc, qubits):\n    \"\"\"Oracle that marks states |101> and |110>\"\"\"\n    qc.x(qubits[1])\n    qc.ccz(qubits[2], qubits[1], qubits[0])\n    qc.x(qubits[1])\n    qc.x(qubits[0])\n    qc.ccz(qubits[2], qubits[1], qubits[0])\n    qc.x(qubits[0])\n\ndef grovers_algorithm():\n    qreg = QuantumRegister(3, 'q')\n    creg = ClassicalRegister(3, 'c')\n    qc = QuantumCircuit(qreg, creg)\n    \n    qc.h(qreg)\n    qc.barrier()\n    \n    optimal_iterations = int(np.round(np.pi/4 * np.sqrt(8/2)))\n    \n    for i in range(optimal_iterations):\n        create_grover_oracle(qc, qreg)\n        qc.barrier()\n        # MISTAKE: Missing diffusion operator!\n        # create_diffusion_operator(qc, qreg)  # This line is commented out/missing\n    \n    qc.measure(qreg, creg)\n    return qc\n\n# Execute\ncircuit = grovers_algorithm()\nsimulator = AerSimulator()\ntranspiled_circuit = transpile(circuit, simulator)\njob = simulator.run(transpiled_circuit, shots=1024)\nresult = job.result()\ncounts = result.get_counts()\nprint(counts)",
+      "expected_incorrect_behavior": "Should show uniform distribution since oracle alone doesn't amplify states",
+      "debugging_hint": "Grover's algorithm requires both oracle AND diffusion operator in each iteration"
+    }
+  ]
+}

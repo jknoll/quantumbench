@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "validation_executed_at": "2025-05-24T11:54:51.290183",
+    "dataset_source": "datasets/claude_sonnet_4_20250514_20250524_114106/1.json",
+    "source_type": "single_file",
+    "dataset_files": [
+      "1.json"
+    ],
+    "dataset_model": "claude_sonnet_4_20250514",
+    "dataset_timestamp": "20250524_114106",
+    "total_entries": 1
+  },
+  "solutions_analysis": {
+    "total_solutions": 1,
+    "successfully_executed": 1,
+    "correct_outputs": 1,
+    "execution_success_rate": 100.0,
+    "correctness_rate": 100.0
+  },
+  "common_mistakes_analysis": {
+    "total_mistake_examples": 0,
+    "successfully_executed": 0,
+    "demonstrates_mistake": 0,
+    "execution_success_rate": 0,
+    "mistake_demonstration_rate": 0
+  },
+  "detailed_results": {
+    "solutions": [
+      {
+        "problem_id": "grover_3qubit_marked_states",
+        "difficulty": "intermediate",
+        "category": "quantum_algorithms",
+        "preference_rank": 1,
+        "entry_type": "solution",
+        "code_executed": true,
+        "expected_output": "Circuit depth: 21\nGate count: {'h': 18, 'x': 12, 'ccz': 6, 'barrier': 6, 'measure': 3}\n\nTheoretical Analysis:\n  Initial amplitude: 0.354\n  Final amplitude for |101⟩: 0.946\n  Final probability for |101⟩: 0.894\n\nSimulation Results:\nMeasurement Results (probability):\n  |000⟩: 0.016\n  |001⟩: 0.016\n  |010⟩: 0.016\n  |011⟩: 0.016\n  |100⟩: 0.016\n  |101⟩: 0.894\n  |110⟩: 0.016\n  |111⟩: 0.016\n\nTarget state |101⟩ probability: 0.894\nTheoretical optimal probability: ~0.894\nClassical random search probability: 0.125\nQuantum speedup factor: 7.15x\n\nVerification:\n✓ Algorithm working correctly - measured probability matches theory\n✓ Quantum speedup demonstrated",
+        "actual_output": "Grover's Algorithm for 3-Qubit Search\nTarget state: |101⟩\nCircuit depth: 18\nGate count: OrderedDict({'x': 16, 'h': 15, 'barrier': 5, 'ccz': 4, 'measure': 3})\nTheoretical Analysis:\n  Initial amplitude: 0.354\n  Final amplitude for |101⟩: 0.972\n  Final probability for |101⟩: 0.945\n\nSimulation Results:\nMeasurement Results (probability):\n  |000⟩: 0.008 (64 counts)\n  |001⟩: 0.007 (61 counts)\n  |010⟩: 0.008 (65 counts)\n  |011⟩: 0.009 (71 counts)\n  |100⟩: 0.008 (62 counts)\n  |101⟩: 0.947 (7755 counts)\n  |110⟩: 0.007 (59 counts)\n  |111⟩: 0.007 (55 counts)\n\nTarget state |101⟩ probability: 0.947\nTheoretical optimal probability: ~0.894\nClassical random search probability: 0.125\nQuantum speedup factor: 7.57x\n\nVerification:\n✓ Algorithm working correctly - measured probability matches theory\n✓ Quantum speedup demonstrated",
+        "outputs_match": true,
+        "rmse_error": null,
+        "execution_error": null
+      }
+    ],
+    "common_mistakes": []
+  }
+}
