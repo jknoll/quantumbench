@@ -8,7 +8,7 @@ import json
 # Create a simplified but valid dataset for testing
 test_dataset = {
     "problem_id": "grover_2qubit_marked_state",
-    "problem_description": "Implement Grover's search algorithm for a 2-qubit system to find a marked state |11⟩.",
+    "prompt": "Implement Grover's search algorithm for a 2-qubit system to find a marked state |11⟩.",
     "difficulty": "intermediate",
     "category": "quantum_algorithms",
     "learning_objectives": [

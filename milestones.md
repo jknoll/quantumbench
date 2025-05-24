@@ -101,8 +101,12 @@ It is of paramount importance to the project that the minimum balance as specifi
 
 **Status: ✅ COMPLETED** 
 
-## Milestone 11:
-Update the validation script to comport with the changes described in Milestone 10 so that it doesn't look for common mistakes and verify that they are interpretable but do not yield the correct answer. Instead, it should focus only on executing the listed examples and ensuring that they're interpretable and yield the correct answers. 
+## Milestone 11: Make the correctness check independent of the chosen code implementation
+The generated code currently includes logic at the end of the quantum circuit setup and execution to look at the output and verify through assertion that the output is correct. The dataset schema also includes, in the `solution` attribute, an `expected output` string which is checked against the actual output to verify correctness.
+
+The problem is that when using this system for fine-tuning another LLM, we can't guarantee that the target LLM will generate code that has the same syntax and logic for verifying its correctness. Therefore, the expected output, which is tightly bound to the solution provided in the dataset, will not be acceptable for checking correctness of the code of the target LLM.
+
+Instead, is it possible to modify the prompt.md instructions to ask Claude to 
 
 ## Milestone 12: Claude 4 Sonnet and Claude 4 Opus
 Performance of Claude 4 Sonnet and Claude 4 Opus, and the performance of each when extended reasoning (or extended thinking) is enabled versus disabled.
@@ -116,6 +120,9 @@ Generate one datasets for each of the following conditions:
 Each dataset should contain 20 examples.
 
 Validate each dataset and output summary statistics about the percentage interpretable and percentage correct stats that each dataset's solutions yield. Indicate which datasets are best to worst as well as best to worst in terms of cost-adjusted correctness. 
+
+## Milestone 13: Simplify validation by removing common_mistake logic.
+Update the validation script to comport with the changes described in Milestone 10 so that it doesn't look for common mistakes and verify that they are interpretable but do not yield the correct answer. Instead, it should focus only on executing the listed examples and ensuring that they're interpretable and yield the correct answers. 
 
 ## 📋 Milestone [ ]: Production Dataset Generation
 - [ ] 9.1: **Large Scale Generation** - Generate comprehensive 100+ problem dataset across all categories

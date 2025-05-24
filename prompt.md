@@ -9,7 +9,7 @@ For each problem, provide a JSON object with the following structure:
 ```json
 {
   "problem_id": "unique_identifier",
-  "problem_description": "Clear natural language description of the quantum computing problem",
+  "prompt": "Clear natural language description of the quantum computing problem",
   "difficulty": "beginner|intermediate|advanced",
   "category": "circuit_construction|quantum_algorithms|optimization|error_mitigation|hardware_interaction|visualization",
   "learning_objectives": ["what concepts this teaches"],

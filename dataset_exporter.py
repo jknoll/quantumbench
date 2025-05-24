@@ -33,7 +33,7 @@ class DatasetExporter:
         # Main dataset info
         base_row = {
             'problem_id': dataset.get('problem_id', ''),
-            'problem_description': dataset.get('problem_description', ''),
+            'prompt': dataset.get('prompt', ''),
             'difficulty': dataset.get('difficulty', ''),
             'category': dataset.get('category', ''),
             'learning_objectives': '; '.join(dataset.get('learning_objectives', [])),
@@ -115,7 +115,7 @@ class DatasetExporter:
                     'problem_id': dataset.get('problem_id', ''),
                     'difficulty': dataset.get('difficulty', ''),
                     'category': dataset.get('category', ''),
-                    'problem_description': dataset.get('problem_description', ''),
+                    'prompt': dataset.get('prompt', ''),
                     'entry_type': 'solution',
                     'preference_rank': solution.get('preference_rank', 0),
                     'code': solution.get('code', ''),
@@ -132,7 +132,7 @@ class DatasetExporter:
                     'problem_id': dataset.get('problem_id', ''),
                     'difficulty': dataset.get('difficulty', ''),
                     'category': dataset.get('category', ''),
-                    'problem_description': dataset.get('problem_description', ''),
+                    'prompt': dataset.get('prompt', ''),
                     'entry_type': 'common_mistake',
                     'preference_rank': -1,  # Negative for mistakes
                     'code': mistake.get('incorrect_code', ''),
@@ -166,7 +166,7 @@ class DatasetExporter:
     
     def _export_instruction_following(self, dataset: Dict[str, Any], file):
         """Export in instruction-following format for fine-tuning."""
-        problem_desc = dataset.get('problem_description', '')
+        problem_desc = dataset.get('prompt', '')
         difficulty = dataset.get('difficulty', '')
         category = dataset.get('category', '')
         
@@ -237,7 +237,7 @@ class DatasetExporter:
                         rejected = sol1.get('code', '')
                     
                     entry = {
-                        "prompt": f"Solve this {dataset.get('difficulty', '')} level quantum computing problem: {dataset.get('problem_description', '')}",
+                        "prompt": f"Solve this {dataset.get('difficulty', '')} level quantum computing problem: {dataset.get('prompt', '')}",
                         "chosen": chosen,
                         "rejected": rejected,
                         "metadata": {

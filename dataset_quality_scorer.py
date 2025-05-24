@@ -30,7 +30,7 @@ class DatasetQualityScorer:
     
     def __init__(self):
         self.required_fields = [
-            'problem_id', 'problem_description', 'difficulty', 'category',
+            'problem_id', 'prompt', 'difficulty', 'category',
             'learning_objectives', 'prerequisites', 'reasoning_trace', 
             'solutions', 'common_mistakes', 'validation_tests', 'extensions'
         ]
@@ -243,7 +243,7 @@ class DatasetQualityScorer:
         
         if stated_category in category_keywords:
             keywords = category_keywords[stated_category]
-            description = dataset.get('problem_description', '').lower()
+            description = dataset.get('prompt', '').lower()
             keyword_matches = sum(1 for kw in keywords if kw in description)
             consistency_score += min(keyword_matches / len(keywords), 1.0) * 0.4
         

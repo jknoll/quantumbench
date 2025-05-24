@@ -15,7 +15,7 @@ def create_10_example_dataset():
     # Example 1: Basic Grover's Algorithm (2-qubit)
     examples.append({
         "problem_id": "grover_2qubit_basic",
-        "problem_description": "Implement Grover's algorithm to search for state |11⟩ in a 2-qubit system.",
+        "prompt": "Implement Grover's algorithm to search for state |11⟩ in a 2-qubit system.",
         "difficulty": "intermediate",
         "category": "quantum_algorithms",
         "learning_objectives": ["Grover's algorithm", "Oracle construction", "Diffusion operator"],
@@ -129,7 +129,7 @@ print(counts)""",
     # Example 2: Bell State Creation
     examples.append({
         "problem_id": "bell_state_creation",
-        "problem_description": "Create and measure Bell state |Φ+⟩ = (|00⟩ + |11⟩)/√2",
+        "prompt": "Create and measure Bell state |Φ+⟩ = (|00⟩ + |11⟩)/√2",
         "difficulty": "beginner",
         "category": "circuit_construction",
         "learning_objectives": ["Bell states", "Entanglement", "CNOT gates"],
@@ -223,7 +223,7 @@ print(counts)""",
     # Example 3: Quantum Fourier Transform
     examples.append({
         "problem_id": "qft_3qubit",
-        "problem_description": "Implement 3-qubit Quantum Fourier Transform",
+        "prompt": "Implement 3-qubit Quantum Fourier Transform",
         "difficulty": "advanced",
         "category": "quantum_algorithms",
         "learning_objectives": ["QFT algorithm", "Controlled rotations", "Phase relationships"],
@@ -341,7 +341,7 @@ print(counts)""",
     for i in range(4, 11):
         examples.append({
             "problem_id": f"example_{i}",
-            "problem_description": f"Example problem {i} - Quantum circuit demonstration",
+            "prompt": f"Example problem {i} - Quantum circuit demonstration",
             "difficulty": "intermediate",
             "category": "circuit_construction",
             "learning_objectives": [f"Concept {i}", "Circuit design"],

@@ -12,7 +12,7 @@ def create_test_dataset():
     
     test_dataset = {
         "problem_id": "test_grover_2qubit",
-        "problem_description": "Test implementation of Grover's algorithm for 2-qubit system targeting |11⟩ state.",
+        "prompt": "Test implementation of Grover's algorithm for 2-qubit system targeting |11⟩ state.",
         "difficulty": "intermediate",
         "category": "quantum_algorithms",
         "learning_objectives": ["Grover's algorithm implementation", "Oracle construction"],

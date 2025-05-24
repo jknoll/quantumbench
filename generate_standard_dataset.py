@@ -104,7 +104,7 @@ class MockDatasetGenerator(DatasetGenerator):
             
         dataset = {
             "problem_id": f"grover_2qubit_{dataset_type}",
-            "problem_description": "Implement Grover's algorithm to search for state |11⟩ in a 2-qubit system.",
+            "prompt": "Implement Grover's algorithm to search for state |11⟩ in a 2-qubit system.",
             "difficulty": "intermediate", 
             "category": "quantum_algorithms",
             "learning_objectives": ["Grover's algorithm", "Oracle construction", "Amplitude amplification"],
