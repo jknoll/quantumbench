@@ -1,0 +1,24 @@
+{
+  "validation_timestamp": "20250524_124945",
+  "dataset_path": "test_dataset.json",
+  "validation_config": {
+    "shots": 1000,
+    "tolerance": 0.05,
+    "min_success_rate": 0.8
+  },
+  "results": [
+    {
+      "problem_id": "grover_2qubit_marked_state",
+      "difficulty": "intermediate",
+      "category": "quantum_algorithms",
+      "validation_type": "legacy",
+      "code_executed": false,
+      "success_rate": null,
+      "meets_threshold": false,
+      "total_parameter_tests": null,
+      "successful_parameter_tests": null,
+      "execution_error": "No solution code found",
+      "details": {}
+    }
+  ]
+}

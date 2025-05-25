@@ -1,0 +1,72 @@
+{
+  "problem_id": "phase_estimation_parameterized",
+  "prompt": "Implement quantum phase estimation to estimate the phase φ of a unitary operator U|ψ⟩ = e^(2πiφ)|ψ⟩. Use n_ancilla ancilla qubits and target_phase as the true phase to estimate.",
+  "difficulty": "advanced",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Phase estimation",
+    "Controlled unitaries",
+    "Inverse QFT"
+  ],
+  "prerequisites": [
+    "QFT",
+    "Controlled operations",
+    "Phase relationships"
+  ],
+  "reasoning_trace": "Quantum phase estimation uses controlled unitaries and inverse QFT to extract phase information. The accuracy scales with the number of ancilla qubits, providing precision of approximately 1/2^n_ancilla.",
+  "parameter_specs": [
+    {
+      "name": "n_ancilla",
+      "type": "integer",
+      "range": [
+        2,
+        4
+      ],
+      "description": "Number of ancilla qubits for phase estimation"
+    },
+    {
+      "name": "target_phase",
+      "type": "float",
+      "range": [
+        0.0,
+        1.0
+      ],
+      "description": "True phase to estimate (as fraction of 2π)"
+    }
+  ],
+  "test_cases": [
+    {
+      "input_params": {
+        "n_ancilla": 3,
+        "target_phase": 0.125
+      },
+      "expected_properties": {
+        "phase_accuracy": {
+          "tolerance": 0.1
+        }
+      }
+    },
+    {
+      "input_params": {
+        "n_ancilla": 4,
+        "target_phase": 0.25
+      },
+      "expected_properties": {
+        "phase_accuracy": {
+          "tolerance": 0.05
+        }
+      }
+    }
+  ],
+  "algorithm_type": "custom",
+  "evaluation_method": "statistical_comparison",
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nn_ancilla = params['n_ancilla']\ntarget_phase = params['target_phase']\n\nancilla = QuantumRegister(n_ancilla, 'a')\ntarget = QuantumRegister(1, 't')\ncr = ClassicalRegister(n_ancilla, 'c')\ncircuit = QuantumCircuit(ancilla, target, cr)\n\n# Initialize target in eigenstate\ncircuit.x(target[0])\n\n# Initialize ancilla in superposition\ncircuit.h(ancilla)\n\n# Controlled unitaries\nfor i in range(n_ancilla):\n    repetitions = 2 ** i\n    angle = 2 * np.pi * target_phase * repetitions\n    circuit.cp(angle, ancilla[i], target[0])\n\n# Inverse QFT on ancilla\nfor i in range(n_ancilla // 2):\n    circuit.swap(ancilla[i], ancilla[n_ancilla - 1 - i])\n\nfor i in range(n_ancilla):\n    for j in range(i):\n        angle = -np.pi / (2 ** (i - j))\n        circuit.cp(angle, ancilla[j], ancilla[i])\n    circuit.h(ancilla[i])\n\ncircuit.measure(ancilla, cr)\n\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()",
+    "output_interpretation": "Phase estimation should yield measurements concentrated around the binary representation of the target phase."
+  },
+  "extensions": [
+    "Iterative phase estimation",
+    "Higher precision estimation",
+    "Noise robustness"
+  ]
+}

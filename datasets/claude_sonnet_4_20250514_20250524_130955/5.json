@@ -1,0 +1,72 @@
+{
+  "problem_id": "vqe_parameterized",
+  "prompt": "Implement a simple VQE ansatz for finding the ground state energy of a parameterized Hamiltonian. Use n_qubits qubits and rotation_angle as the variational parameter.",
+  "difficulty": "advanced",
+  "category": "optimization",
+  "learning_objectives": [
+    "VQE algorithm",
+    "Variational circuits",
+    "Energy measurement"
+  ],
+  "prerequisites": [
+    "Parameterized gates",
+    "Hamiltonian simulation",
+    "Optimization"
+  ],
+  "reasoning_trace": "VQE uses a parameterized quantum circuit to prepare trial states and measures the expectation value of the Hamiltonian. The classical optimizer adjusts parameters to minimize the energy, converging to the ground state.",
+  "parameter_specs": [
+    {
+      "name": "n_qubits",
+      "type": "integer",
+      "range": [
+        2,
+        3
+      ],
+      "description": "Number of qubits in the VQE circuit"
+    },
+    {
+      "name": "rotation_angle",
+      "type": "float",
+      "range": [
+        0.0,
+        6.28
+      ],
+      "description": "Rotation angle for parameterized gates (in radians)"
+    }
+  ],
+  "test_cases": [
+    {
+      "input_params": {
+        "n_qubits": 2,
+        "rotation_angle": 1.57
+      },
+      "expected_properties": {
+        "energy_variance": {
+          "max": 0.1
+        }
+      }
+    },
+    {
+      "input_params": {
+        "n_qubits": 3,
+        "rotation_angle": 3.14
+      },
+      "expected_properties": {
+        "energy_variance": {
+          "max": 0.15
+        }
+      }
+    }
+  ],
+  "algorithm_type": "custom",
+  "evaluation_method": "statistical_comparison",
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nn_qubits = params['n_qubits']\nrotation_angle = params['rotation_angle']\n\nqr = QuantumRegister(n_qubits, 'q')\ncr = ClassicalRegister(n_qubits, 'c')\ncircuit = QuantumCircuit(qr, cr)\n\n# Simple VQE ansatz\nfor i in range(n_qubits):\n    circuit.ry(rotation_angle, qr[i])\n\nfor i in range(n_qubits - 1):\n    circuit.cx(qr[i], qr[i + 1])\n\nfor i in range(n_qubits):\n    circuit.ry(rotation_angle / 2, qr[i])\n\ncircuit.measure(qr, cr)\n\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()",
+    "output_interpretation": "VQE circuits should produce measurement distributions that reflect the trial wavefunction for energy estimation."
+  },
+  "extensions": [
+    "Hardware-efficient ansatz",
+    "QAOA",
+    "Adaptive VQE"
+  ]
+}

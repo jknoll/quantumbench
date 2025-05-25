@@ -1,0 +1,82 @@
+{
+  "problem_id": "qft_parameterized",
+  "prompt": "Implement a parameterized Quantum Fourier Transform (QFT) that works for different numbers of qubits and different input states. The QFT should transform computational basis states to frequency domain representations. Use the provided parameters: n_qubits (number of qubits in the system) and input_state (initial computational basis state to transform). The circuit should prepare the specified input state and then apply the QFT transformation.",
+  "difficulty": "advanced",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Understanding QFT algorithm mechanics",
+    "Parameterized quantum circuit construction",
+    "Controlled rotation gate implementation",
+    "Frequency domain analysis of quantum states"
+  ],
+  "prerequisites": [
+    "Rotation gates (RZ, controlled rotations)",
+    "Quantum phase relationships",
+    "Fourier transform concepts",
+    "Multi-qubit gate operations"
+  ],
+  "reasoning_trace": "The Quantum Fourier Transform is the quantum analogue of the discrete Fourier transform and forms the basis of many quantum algorithms including Shor's algorithm and quantum phase estimation. The QFT on n qubits transforms the computational basis state |j⟩ to (1/√N)∑_{k=0}^{N-1} e^{2πijk/N}|k⟩ where N=2^n. The implementation requires applying Hadamard gates and controlled rotation gates with angles π/2^k. For different input states, we first prepare the desired computational basis state, then apply the QFT. The output distribution should show the characteristic Fourier transform pattern, which for a single computational basis input creates a uniform superposition with specific phase relationships that can be verified through measurement statistics.",
+  
+  "parameter_specs": [
+    {
+      "name": "n_qubits",
+      "type": "integer",
+      "range": [2, 4],
+      "description": "Number of qubits in the QFT circuit (determines system size)"
+    },
+    {
+      "name": "input_state",
+      "type": "integer",
+      "range": [0, 15],
+      "description": "Computational basis state index to prepare before applying QFT (must be < 2^n_qubits)"
+    }
+  ],
+  
+  "test_cases": [
+    {
+      "input_params": {
+        "n_qubits": 2,
+        "input_state": 0
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 10},
+        "uniform_distribution": {"tolerance": 0.1}
+      }
+    },
+    {
+      "input_params": {
+        "n_qubits": 3,
+        "input_state": 1
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 20},
+        "uniform_distribution": {"tolerance": 0.15}
+      }
+    },
+    {
+      "input_params": {
+        "n_qubits": 3,
+        "input_state": 5
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 20},
+        "uniform_distribution": {"tolerance": 0.15}
+      }
+    }
+  ],
+  
+  "algorithm_type": "qft",
+  "evaluation_method": "statistical_comparison",
+  
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\n\ndef prepare_input_state(circuit, qubits, state_index):\n    \"\"\"Prepare a specific computational basis state.\"\"\"\n    n_qubits = len(qubits)\n    binary_repr = format(state_index, f'0{n_qubits}b')\n    \n    # Apply X gates to qubits that should be |1⟩\n    for i, bit in enumerate(binary_repr):\n        if bit == '1':\n            circuit.x(qubits[i])\n\ndef apply_qft(circuit, qubits):\n    \"\"\"Apply Quantum Fourier Transform to the qubits.\"\"\"\n    n_qubits = len(qubits)\n    \n    # Apply QFT\n    for i in range(n_qubits):\n        # Apply Hadamard gate\n        circuit.h(qubits[i])\n        \n        # Apply controlled rotation gates\n        for j in range(i + 1, n_qubits):\n            # Controlled rotation with angle π/2^(j-i)\n            angle = np.pi / (2 ** (j - i))\n            circuit.cp(angle, qubits[j], qubits[i])\n    \n    # Swap qubits to get correct output order\n    for i in range(n_qubits // 2):\n        circuit.swap(qubits[i], qubits[n_qubits - 1 - i])\n\ndef create_qft_circuit(n_qubits, input_state):\n    \"\"\"Create a parameterized QFT circuit.\"\"\"\n    # Validate input state\n    max_state = 2 ** n_qubits - 1\n    if input_state > max_state:\n        raise ValueError(f'Input state {input_state} exceeds maximum for {n_qubits} qubits ({max_state})')\n    \n    qr = QuantumRegister(n_qubits, 'q')\n    cr = ClassicalRegister(n_qubits, 'c')\n    circuit = QuantumCircuit(qr, cr)\n    \n    # Prepare input state\n    prepare_input_state(circuit, qr, input_state)\n    \n    # Add barrier for clarity\n    circuit.barrier()\n    \n    # Apply QFT\n    apply_qft(circuit, qr)\n    \n    # Add barrier before measurement\n    circuit.barrier()\n    \n    # Measure all qubits\n    circuit.measure(qr, cr)\n    \n    return circuit\n\n# Extract parameters from global params variable\nn_qubits = params['n_qubits']\ninput_state = params['input_state']\n\n# Validate parameters\nif input_state >= 2 ** n_qubits:\n    # Adjust input state to be within valid range\n    input_state = input_state % (2 ** n_qubits)\n\n# Create and execute the circuit\ncircuit = create_qft_circuit(n_qubits, input_state)\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()\n\n# Analyze uniformity of distribution\ntotal_shots = sum(counts.values())\nexpected_count_per_state = total_shots / (2 ** n_qubits)\n\n# Calculate deviation from uniform distribution\ndeviations = []\nfor i in range(2 ** n_qubits):\n    state_key = format(i, f'0{n_qubits}b')[::-1]  # Qiskit bit order\n    actual_count = counts.get(state_key, 0)\n    deviation = abs(actual_count - expected_count_per_state) / expected_count_per_state\n    deviations.append(deviation)\n\naverage_deviation = np.mean(deviations)\nmax_deviation = np.max(deviations)\n\nprint(f'QFT applied to {n_qubits} qubits, input state |{input_state}⟩')\nprint(f'Circuit depth: {circuit.depth()}')\nprint(f'Measurement counts: {dict(sorted(counts.items()))}')\nprint(f'Average deviation from uniform: {average_deviation:.3f}')\nprint(f'Maximum deviation from uniform: {max_deviation:.3f}')\nprint(f'Expected count per state: {expected_count_per_state:.1f}')",
+    "output_interpretation": "The QFT of a computational basis state should produce a relatively uniform distribution across all possible measurement outcomes, with small statistical fluctuations. The average deviation from uniform distribution should be small (< 0.2), indicating successful transformation to the frequency domain."
+  },
+  
+  "extensions": [
+    "Implement inverse QFT for state reconstruction",
+    "Add phase estimation algorithm using QFT",
+    "Extend to modular arithmetic applications",
+    "Implement approximate QFT with reduced gate count"
+  ]
+}

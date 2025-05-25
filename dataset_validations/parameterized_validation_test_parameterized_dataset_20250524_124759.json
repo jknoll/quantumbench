@@ -1,0 +1,28 @@
+{
+  "validation_timestamp": "20250524_124759",
+  "dataset_path": "test_parameterized_dataset.json",
+  "validation_config": {
+    "shots": 1000,
+    "tolerance": 0.05,
+    "min_success_rate": 0.8
+  },
+  "results": [
+    {
+      "problem_id": "grover_parameterized_test",
+      "difficulty": "intermediate",
+      "category": "quantum_algorithms",
+      "validation_type": "parameterized",
+      "code_executed": true,
+      "success_rate": 0.2,
+      "meets_threshold": false,
+      "total_parameter_tests": 5,
+      "successful_parameter_tests": 1,
+      "execution_error": null,
+      "details": {
+        "algorithm_type": "grover",
+        "total_tests": 5,
+        "successful_tests": 1,
+        "success_rate": 0.2,
+        "meets_threshold": false,
+        "individual_results": [
+          

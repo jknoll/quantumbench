@@ -1,0 +1,71 @@
+{
+  "problem_id": "quantum_circuit_example_8",
+  "prompt": "Implement a parameterized quantum circuit example 8 that demonstrates basic quantum operations with configurable parameters.",
+  "difficulty": "intermediate",
+  "category": "circuit_construction",
+  "learning_objectives": [
+    "Circuit design 8",
+    "Parameter handling",
+    "Measurement analysis"
+  ],
+  "prerequisites": [
+    "Basic quantum gates",
+    "Circuit construction"
+  ],
+  "reasoning_trace": "This example demonstrates fundamental quantum circuit construction principles with parameterizable components that allow for systematic testing and validation of quantum operations.",
+  "parameter_specs": [
+    {
+      "name": "n_qubits",
+      "type": "integer",
+      "range": [
+        2,
+        3
+      ],
+      "description": "Number of qubits in the circuit"
+    },
+    {
+      "name": "angle",
+      "type": "float",
+      "range": [
+        0.0,
+        6.28
+      ],
+      "description": "Rotation angle parameter"
+    }
+  ],
+  "test_cases": [
+    {
+      "input_params": {
+        "n_qubits": 2,
+        "angle": 1.57
+      },
+      "expected_properties": {
+        "circuit_depth": {
+          "max": 10
+        }
+      }
+    },
+    {
+      "input_params": {
+        "n_qubits": 3,
+        "angle": 3.14
+      },
+      "expected_properties": {
+        "circuit_depth": {
+          "max": 15
+        }
+      }
+    }
+  ],
+  "algorithm_type": "custom",
+  "evaluation_method": "statistical_comparison",
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nn_qubits = params['n_qubits']\nangle = params['angle']\n\nqr = QuantumRegister(n_qubits, 'q')\ncr = ClassicalRegister(n_qubits, 'c')\ncircuit = QuantumCircuit(qr, cr)\n\n# Example 8 circuit pattern\ncircuit.h(qr[0])\nfor j in range(n_qubits - 1):\n    circuit.cx(qr[j], qr[j + 1])\n    circuit.ry(angle / (j + 1), qr[j])\n\ncircuit.measure(qr, cr)\n\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()",
+    "output_interpretation": "Example 8 should produce measurement distributions reflecting the parameterized quantum operations."
+  },
+  "extensions": [
+    "Extend example 8 to larger systems",
+    "Add noise modeling",
+    "Optimization variants"
+  ]
+}

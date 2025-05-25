@@ -1,0 +1,15 @@
+DATASET VALIDATION RESULTS
+==================================================
+Validation executed at: 2025-05-25T12:13:48.439744
+Dataset source: /var/folders/zq/91wwstg12hnccblh2x_phwz80000gp/T/tmpfmdf8luv.json
+Source type: Single file
+Dataset model: unknown_model
+Dataset timestamp: 20250525_121348
+
+No results to display
+OVERALL VALIDATION STATISTICS
+================================================================================
+================================================================================
+
+DETAILED VALIDATION RESULTS
+==================================================

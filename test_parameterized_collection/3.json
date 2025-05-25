@@ -1,0 +1,79 @@
+{
+  "problem_id": "grover_parameterized_test",
+  "prompt": "Implement Grover's algorithm for searching marked states in a quantum system. The algorithm should work for different numbers of qubits (2-4) and different sets of marked states. Use the provided parameters: n_qubits (number of qubits), marked_states (list of marked state indices), and optimal_iterations (number of Grover iterations to perform).",
+  "difficulty": "intermediate",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Understanding parameterized Grover's algorithm",
+    "Oracle construction for arbitrary marked states",
+    "Optimal iteration calculation",
+    "Statistical validation of quantum algorithms"
+  ],
+  "prerequisites": [
+    "Basic quantum gates",
+    "Quantum superposition",
+    "Multi-controlled gates"
+  ],
+  "reasoning_trace": "Grover's algorithm provides quadratic speedup for unstructured search. The algorithm works by repeatedly applying an oracle that marks target states and a diffusion operator that amplifies marked state amplitudes. For parameterized implementation, we need to construct oracles dynamically based on the marked_states parameter and apply the optimal number of iterations. The success probability depends on the ratio of marked to total states and follows the formula P = sin²((2k+1)θ) where θ = arcsin(√(M/N)) and k is the number of iterations.",
+  
+  "parameter_specs": [
+    {
+      "name": "n_qubits",
+      "type": "integer",
+      "range": [2, 4],
+      "description": "Number of qubits in the quantum system (determines search space size)"
+    },
+    {
+      "name": "marked_states",
+      "type": "discrete",
+      "range": "list of integers from 0 to 2^n_qubits-1",
+      "description": "List of computational basis state indices to be marked by the oracle"
+    },
+    {
+      "name": "optimal_iterations",
+      "type": "integer", 
+      "range": [1, 10],
+      "description": "Number of Grover iterations to perform for optimal success probability"
+    }
+  ],
+  
+  "test_cases": [
+    {
+      "input_params": {
+        "n_qubits": 2,
+        "marked_states": [3],
+        "optimal_iterations": 1
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 25},
+        "success_probability": {"min": 0.8}
+      }
+    },
+    {
+      "input_params": {
+        "n_qubits": 3,
+        "marked_states": [5],
+        "optimal_iterations": 2
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 40},
+        "success_probability": {"min": 0.8}
+      }
+    }
+  ],
+  
+  "algorithm_type": "grover",
+  "evaluation_method": "statistical_comparison",
+  
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\n\ndef create_grover_circuit(n_qubits, marked_states, iterations):\n    \"\"\"Create parameterized Grover's algorithm circuit.\"\"\"\n    qr = QuantumRegister(n_qubits, 'q')\n    cr = ClassicalRegister(n_qubits, 'c')\n    circuit = QuantumCircuit(qr, cr)\n    \n    # Initialize superposition\n    circuit.h(qr)\n    \n    # Grover iterations\n    for _ in range(iterations):\n        # Oracle - mark specified states\n        for state in marked_states:\n            # Convert state to binary and apply oracle\n            binary = format(state, f'0{n_qubits}b')\n            \n            # Flip qubits that should be 0 for this state\n            for i, bit in enumerate(binary):\n                if bit == '0':\n                    circuit.x(qr[i])\n            \n            # Multi-controlled Z gate\n            if n_qubits == 1:\n                circuit.z(qr[0])\n            elif n_qubits == 2:\n                circuit.cz(qr[0], qr[1])\n            else:\n                # Use multi-controlled Z gate for 3+ qubits\n                circuit.h(qr[n_qubits-1])\n                circuit.mcx(list(range(n_qubits-1)), n_qubits-1)\n                circuit.h(qr[n_qubits-1])\n            \n            # Restore flipped qubits\n            for i, bit in enumerate(binary):\n                if bit == '0':\n                    circuit.x(qr[i])\n        \n        # Diffusion operator (inversion about average)\n        circuit.h(qr)\n        circuit.x(qr)\n        \n        # Multi-controlled Z on |111...1⟩\n        if n_qubits == 1:\n            circuit.z(qr[0])\n        elif n_qubits == 2:\n            circuit.cz(qr[0], qr[1])\n        else:\n            # Use multi-controlled Z gate for 3+ qubits\n            circuit.h(qr[n_qubits-1])\n            circuit.mcx(list(range(n_qubits-1)), n_qubits-1)\n            circuit.h(qr[n_qubits-1])\n        \n        circuit.x(qr)\n        circuit.h(qr)\n    \n    circuit.measure(qr, cr)\n    return circuit\n\n# Extract parameters\nn_qubits = params['n_qubits']\nmarked_states = params['marked_states']\niterations = params['optimal_iterations']\n\n# Create and execute circuit\ncircuit = create_grover_circuit(n_qubits, marked_states, iterations)\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()\n\n# Calculate success probability\ntotal_shots = sum(counts.values())\nsuccess_count = sum(counts.get(format(state, f'0{n_qubits}b')[::-1], 0) for state in marked_states)\nsuccess_probability = success_count / total_shots\n\nprint(f'Success probability: {success_probability:.3f}')\nprint(f'Measurement counts: {counts}')",
+    "output_interpretation": "The algorithm should achieve high success probability (>0.8) for the marked states. Measurement distribution should show marked states with significantly higher counts than unmarked states, demonstrating quantum amplitude amplification."
+  },
+  
+  "extensions": [
+    "Extend to larger search spaces (5+ qubits)",
+    "Implement adaptive iteration counting",
+    "Add noise modeling and error mitigation",
+    "Compare with classical random search performance"
+  ]
+}

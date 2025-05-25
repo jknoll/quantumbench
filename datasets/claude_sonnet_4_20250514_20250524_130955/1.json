@@ -1,0 +1,81 @@
+{
+  "problem_id": "grover_2qubit_parameterized",
+  "prompt": "Implement Grover's algorithm for a 2-qubit system that can search for any marked state specified by the marked_state parameter. The algorithm should work for marked_state values 0, 1, 2, or 3, representing the computational basis states |00⟩, |01⟩, |10⟩, and |11⟩ respectively.",
+  "difficulty": "intermediate",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Grover's algorithm implementation",
+    "Oracle construction for arbitrary marked states",
+    "Optimal iteration calculation for 2-qubit systems"
+  ],
+  "prerequisites": [
+    "Basic quantum gates",
+    "Quantum superposition",
+    "CNOT operations"
+  ],
+  "reasoning_trace": "Grover's algorithm provides quadratic speedup for unstructured search problems. For a 2-qubit system with N=4 states, searching for a single marked state requires approximately π√N/4 ≈ 1.57 iterations, so 1 or 2 iterations are optimal depending on the specific marked state and desired success probability. The oracle marks the target state by flipping its phase, while the diffusion operator performs inversion about the average amplitude. The success probability after k iterations is sin²((2k+1)θ) where θ = arcsin(√(1/4)) = π/6.",
+  "parameter_specs": [
+    {
+      "name": "marked_state",
+      "type": "integer",
+      "range": [
+        0,
+        3
+      ],
+      "description": "Index of the computational basis state to be marked (0=|00⟩, 1=|01⟩, 2=|10⟩, 3=|11⟩)"
+    }
+  ],
+  "test_cases": [
+    {
+      "input_params": {
+        "marked_state": 0
+      },
+      "expected_properties": {
+        "success_probability": {
+          "min": 0.8
+        }
+      }
+    },
+    {
+      "input_params": {
+        "marked_state": 1
+      },
+      "expected_properties": {
+        "success_probability": {
+          "min": 0.8
+        }
+      }
+    },
+    {
+      "input_params": {
+        "marked_state": 2
+      },
+      "expected_properties": {
+        "success_probability": {
+          "min": 0.8
+        }
+      }
+    },
+    {
+      "input_params": {
+        "marked_state": 3
+      },
+      "expected_properties": {
+        "success_probability": {
+          "min": 0.8
+        }
+      }
+    }
+  ],
+  "algorithm_type": "grover",
+  "evaluation_method": "statistical_comparison",
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nmarked_state = params['marked_state']\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\ncircuit = QuantumCircuit(qr, cr)\n\n# Initialize superposition\ncircuit.h(qr)\n\n# Oracle for marked state\nbinary = format(marked_state, '02b')\nfor i, bit in enumerate(binary):\n    if bit == '0':\n        circuit.x(qr[i])\n\ncircuit.cz(qr[0], qr[1])\n\nfor i, bit in enumerate(binary):\n    if bit == '0':\n        circuit.x(qr[i])\n\n# Diffusion operator\ncircuit.h(qr)\ncircuit.x(qr)\ncircuit.cz(qr[0], qr[1])\ncircuit.x(qr)\ncircuit.h(qr)\n\ncircuit.measure(qr, cr)\n\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()",
+    "output_interpretation": "The marked state should have high probability (>80%) while other states have low probability, demonstrating quantum amplitude amplification."
+  },
+  "extensions": [
+    "Extend to 3-qubit systems",
+    "Multiple marked states",
+    "Adaptive iteration counting"
+  ]
+}

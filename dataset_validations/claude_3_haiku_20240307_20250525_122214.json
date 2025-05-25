@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "validation_executed_at": "2025-05-25T12:22:15.681898",
+    "dataset_source": "datasets/claude_3_haiku_20240307_20250525_122214/1.json",
+    "source_type": "single_file",
+    "dataset_files": [
+      "1.json"
+    ],
+    "dataset_model": "claude_3_haiku_20240307",
+    "dataset_timestamp": "20250525_122214",
+    "total_entries": 1
+  },
+  "solutions_analysis": {
+    "total_solutions": 1,
+    "successfully_executed": 1,
+    "correct_outputs": 0,
+    "execution_success_rate": 100.0,
+    "correctness_rate": 0.0
+  },
+  "common_mistakes_analysis": {
+    "total_mistake_examples": 0,
+    "successfully_executed": 0,
+    "demonstrates_mistake": 0,
+    "execution_success_rate": 0,
+    "mistake_demonstration_rate": 0
+  },
+  "detailed_results": {
+    "solutions": [
+      {
+        "problem_id": "grover_algorithm_basic",
+        "difficulty": "beginner",
+        "category": "quantum_algorithms",
+        "preference_rank": 1,
+        "entry_type": "solution",
+        "code_executed": true,
+        "expected_output": "",
+        "actual_output": "No output captured",
+        "outputs_match": false,
+        "rmse_error": null,
+        "execution_error": null
+      }
+    ],
+    "common_mistakes": []
+  }
+}

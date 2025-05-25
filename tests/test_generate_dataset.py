@@ -7,6 +7,9 @@ import os
 import json
 import tempfile
 from unittest.mock import Mock, patch, MagicMock
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from generate_dataset import DatasetGenerator
 
 

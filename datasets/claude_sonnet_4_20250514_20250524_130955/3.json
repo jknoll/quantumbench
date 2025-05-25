@@ -1,0 +1,83 @@
+{
+  "problem_id": "qft_parameterized",
+  "prompt": "Implement a parameterized Quantum Fourier Transform for n_qubits qubits that transforms the input computational basis state specified by input_state. The QFT should work for n_qubits from 2 to 4 and any valid input_state.",
+  "difficulty": "advanced",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "QFT implementation",
+    "Controlled rotations",
+    "Qubit swapping"
+  ],
+  "prerequisites": [
+    "Rotation gates",
+    "Controlled operations",
+    "Phase relationships"
+  ],
+  "reasoning_trace": "The QFT transforms computational basis states to frequency domain representations using Hadamard gates and controlled phase rotations. For n qubits, it requires n Hadamard gates and n(n-1)/2 controlled phase rotations with angles π/2^k. The final qubit swapping ensures correct output ordering.",
+  "parameter_specs": [
+    {
+      "name": "n_qubits",
+      "type": "integer",
+      "range": [
+        2,
+        4
+      ],
+      "description": "Number of qubits in the QFT circuit"
+    },
+    {
+      "name": "input_state",
+      "type": "integer",
+      "range": [
+        0,
+        15
+      ],
+      "description": "Input computational basis state (must be < 2^n_qubits)"
+    }
+  ],
+  "test_cases": [
+    {
+      "input_params": {
+        "n_qubits": 2,
+        "input_state": 0
+      },
+      "expected_properties": {
+        "uniform_distribution": {
+          "tolerance": 0.15
+        }
+      }
+    },
+    {
+      "input_params": {
+        "n_qubits": 3,
+        "input_state": 1
+      },
+      "expected_properties": {
+        "uniform_distribution": {
+          "tolerance": 0.2
+        }
+      }
+    },
+    {
+      "input_params": {
+        "n_qubits": 3,
+        "input_state": 5
+      },
+      "expected_properties": {
+        "uniform_distribution": {
+          "tolerance": 0.2
+        }
+      }
+    }
+  ],
+  "algorithm_type": "qft",
+  "evaluation_method": "statistical_comparison",
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nn_qubits = params['n_qubits']\ninput_state = params['input_state'] % (2**n_qubits)\n\nqr = QuantumRegister(n_qubits, 'q')\ncr = ClassicalRegister(n_qubits, 'c')\ncircuit = QuantumCircuit(qr, cr)\n\n# Prepare input state\nbinary = format(input_state, f'0{n_qubits}b')\nfor i, bit in enumerate(binary):\n    if bit == '1':\n        circuit.x(qr[i])\n\n# QFT\nfor i in range(n_qubits):\n    circuit.h(qr[i])\n    for j in range(i + 1, n_qubits):\n        angle = np.pi / (2 ** (j - i))\n        circuit.cp(angle, qr[j], qr[i])\n\n# Swap qubits\nfor i in range(n_qubits // 2):\n    circuit.swap(qr[i], qr[n_qubits - 1 - i])\n\ncircuit.measure(qr, cr)\n\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()",
+    "output_interpretation": "QFT of computational basis states produces relatively uniform distributions in frequency domain."
+  },
+  "extensions": [
+    "Inverse QFT",
+    "Phase estimation",
+    "Modular arithmetic applications"
+  ]
+}

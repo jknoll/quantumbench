@@ -1,0 +1,26 @@
+{
+  "validation_timestamp": "20250524_125015",
+  "dataset_path": "datasets/claude_sonnet_4_20250514_20250524_114106/1.json",
+  "validation_config": {
+    "shots": 1000,
+    "tolerance": 0.05,
+    "min_success_rate": 0.8
+  },
+  "results": [
+    {
+      "problem_id": "grover_3qubit_marked_states",
+      "difficulty": "intermediate",
+      "category": "quantum_algorithms",
+      "validation_type": "legacy",
+      "code_executed": false,
+      "success_rate": null,
+      "meets_threshold": false,
+      "total_parameter_tests": null,
+      "successful_parameter_tests": null,
+      "execution_error": "'DatasetValidator' object has no attribute 'execute_code'",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/justinknoll/git/quantumbench/parameterized_validation.py\", line 228, in _validate_legacy\n    executed, actual_output, error = validator.execute_code(code)\n                                     ^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'DatasetValidator' object has no attribute 'execute_code'. Did you mean: 'safe_execute_code'?\n"
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "validation_executed_at": "2025-05-25T12:11:57.264151",
+    "dataset_source": "/var/folders/zq/91wwstg12hnccblh2x_phwz80000gp/T/tmp9fis0157.json",
+    "source_type": "single_file",
+    "dataset_files": [
+      "tmp9fis0157.json"
+    ],
+    "dataset_model": "unknown_model",
+    "dataset_timestamp": "20250525_121157",
+    "total_entries": 0
+  },
+  "solutions_analysis": {
+    "total_solutions": 0,
+    "successfully_executed": 0,
+    "correct_outputs": 0,
+    "execution_success_rate": 0,
+    "correctness_rate": 0
+  },
+  "common_mistakes_analysis": {
+    "total_mistake_examples": 0,
+    "successfully_executed": 0,
+    "demonstrates_mistake": 0,
+    "execution_success_rate": 0,
+    "mistake_demonstration_rate": 0
+  },
+  "detailed_results": {
+    "solutions": [],
+    "common_mistakes": []
+  }
+}

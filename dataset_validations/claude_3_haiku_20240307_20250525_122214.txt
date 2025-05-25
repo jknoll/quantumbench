@@ -1,0 +1,40 @@
+DATASET VALIDATION RESULTS
+==================================================
+Validation executed at: 2025-05-25T12:22:15.681738
+Dataset source: datasets/claude_3_haiku_20240307_20250525_122214/1.json
+Source type: Single file
+Dataset model: claude_3_haiku_20240307
+Dataset timestamp: 20250525_122214
+
+SOLUTIONS VALIDATION RESULTS
+==================================================
+Expected: All solutions should compile, execute, and produce correct outputs
+
++------------------------+-------------------+-----------------+-----------------+--------------+-------------------+
+| Problem ID             |   Preference Rank | Code Executed   | Outputs Match   | RMSE Error   | Execution Error   |
++========================+===================+=================+=================+==============+===================+
+| grover_algorithm_basic |                 1 | ✓               | ✗               | N/A          | None              |
++------------------------+-------------------+-----------------+-----------------+--------------+-------------------+
+
+SOLUTIONS SUMMARY:
+Total solutions: 1
+Successfully executed: 1/1 (100.0%)
+Correct outputs: 0/1 (0.0% of executed)
+
+OVERALL VALIDATION STATISTICS
+================================================================================
+SOLUTIONS:
+  Total solutions: 1
+  Successfully executed: 1/1 (100.0%)
+  Correct outputs: 0/1 (0.0% of executed)
+================================================================================
+
+DETAILED VALIDATION RESULTS
+==================================================
+
+1. SOLUTION - Rank 1
+   Problem ID: grover_algorithm_basic
+   Executed: ✓
+   Expected: 
+   Actual:   No output captured
+   Match: ✗

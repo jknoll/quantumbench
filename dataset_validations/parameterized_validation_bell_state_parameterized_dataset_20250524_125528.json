@@ -1,0 +1,45 @@
+{
+  "validation_timestamp": "20250524_125528",
+  "dataset_path": "bell_state_parameterized_dataset.json",
+  "validation_config": {
+    "shots": 1000,
+    "tolerance": 0.05,
+    "min_success_rate": 0.8
+  },
+  "results": [
+    {
+      "problem_id": "bell_state_parameterized",
+      "difficulty": "beginner",
+      "category": "circuit_construction",
+      "validation_type": "parameterized",
+      "code_executed": true,
+      "success_rate": 0.0,
+      "meets_threshold": false,
+      "total_parameter_tests": 4,
+      "successful_parameter_tests": 0,
+      "execution_error": null,
+      "details": {
+        "algorithm_type": "bell_state",
+        "total_tests": 4,
+        "successful_tests": 0,
+        "success_rate": 0.0,
+        "meets_threshold": false,
+        "individual_results": [
+          "ParameterTestResult(test_case=TestCase(input_params={'type': 'phi_plus', 'preparation': 'h_cnot'}, expected_properties={}, expected_outputs={}), reference_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, target_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, success=False, details={'overall_success': False, 'error': 'Execution failed', 'ref_error': \"'bell_type'\", 'target_error': \"'bell_type'\"})",
+          "ParameterTestResult(test_case=TestCase(input_params={'type': 'phi_minus', 'preparation': 'h_z_cnot'}, expected_properties={}, expected_outputs={}), reference_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, target_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, success=False, details={'overall_success': False, 'error': 'Execution failed', 'ref_error': \"'bell_type'\", 'target_error': \"'bell_type'\"})",
+          "ParameterTestResult(test_case=TestCase(input_params={'type': 'psi_plus', 'preparation': 'h_x_cnot'}, expected_properties={}, expected_outputs={}), reference_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, target_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, success=False, details={'overall_success': False, 'error': 'Execution failed', 'ref_error': \"'bell_type'\", 'target_error': \"'bell_type'\"})",
+          "ParameterTestResult(test_case=TestCase(input_params={'type': 'psi_minus', 'preparation': 'h_x_z_cnot'}, expected_properties={}, expected_outputs={}), reference_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, target_output={'success': False, 'error': \"'bell_type'\", 'traceback': 'Traceback (most recent call last):\\n  File \"/Users/justinknoll/git/quantumbench/parameter_testing_framework.py\", line 156, in execute_code\\n    exec(code, exec_globals)\\n  File \"<string>\", line 45, in <module>\\nKeyError: \\'bell_type\\'\\n'}, success=False, details={'overall_success': False, 'error': 'Execution failed', 'ref_error': \"'bell_type'\", 'target_error': \"'bell_type'\"})"
+        ],
+        "summary": {
+          "total_tests": 4,
+          "successful_tests": 0,
+          "failed_tests": 4,
+          "success_rate": 0.0,
+          "failure_reasons": {
+            "Execution failed": 4
+          }
+        }
+      }
+    }
+  ]
+}

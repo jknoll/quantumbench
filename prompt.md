@@ -9,7 +9,7 @@ For each problem, provide a JSON object with the following structure:
 ```json
 {
   "problem_id": "unique_identifier",
-  "prompt": "Clear natural language description of the quantum computing problem",
+  "prompt": "Clear natural language description of the quantum computing problem including parameter specifications",
   "difficulty": "beginner|intermediate|advanced",
   "category": "circuit_construction|quantum_algorithms|optimization|error_mitigation|hardware_interaction|visualization",
   "learning_objectives": ["what concepts this teaches"],
@@ -17,10 +17,31 @@ For each problem, provide a JSON object with the following structure:
   
   "reasoning_trace": "Comprehensive step-by-step reasoning that explains the quantum physics concepts, algorithm choice, parameter selection, and implementation strategy needed to solve this problem",
   
+  "parameter_specs": [
+    {
+      "name": "parameter_name",
+      "type": "integer|float|discrete|boolean",
+      "range": [min_value, max_value] or ["option1", "option2"],
+      "description": "Clear description of what this parameter controls"
+    }
+  ],
+  
+  "test_cases": [
+    {
+      "input_params": {"param1": value1, "param2": value2},
+      "expected_properties": {
+        "circuit_depth": {"max": 50},
+        "success_probability": {"min": 0.8}
+      }
+    }
+  ],
+  
+  "algorithm_type": "grover|bell_state|qft|vqe|qaoa|custom",
+  "evaluation_method": "statistical_comparison",
+  
   "solution": {
-    "code": "Complete, executable Qiskit code",
-    "expected_output": "What the code produces when executed",
-    "output_interpretation": "How to understand and validate the results"
+    "code": "Complete, executable Qiskit code that accepts parameters via 'params' variable",
+    "output_interpretation": "How to understand and validate the results statistically"
   },
   
   "extensions": [
@@ -87,14 +108,36 @@ The reasoning trace should be a comprehensive narrative that demonstrates:
 - All code must be complete, executable, and properly commented
 - Include necessary imports and backend setup
 - Use current Qiskit syntax and best practices
+- **IMPORTANT**: Code must accept parameters via a global `params` variable for parameterized testing
 - Include both simulator and hardware-compatible versions when relevant
+
+### Parameterized Testing Requirements
+
+Each problem must include parameter specifications that enable implementation-independent validation:
+
+1. **Parameter Specifications**: Define input parameters with types, ranges, and descriptions
+2. **Test Cases**: Provide specific parameter values with expected properties
+3. **Algorithm Type**: Specify the algorithm category for appropriate parameter generation
+4. **Statistical Validation**: Use statistical comparison instead of exact output matching
+
+**Implementation Guidelines:**
+- Access parameters via `params['parameter_name']` in your code
+- Design parameters that cover meaningful variations of the algorithm
+- For probabilistic algorithms (like Grover's), specify success probability ranges
+- Include circuit property constraints (depth, gate count) where relevant
+
+**Example Parameter Patterns:**
+- **Grover's Algorithm**: `n_qubits`, `marked_states`, `optimal_iterations`
+- **Bell States**: `bell_type` (phi_plus, phi_minus, psi_plus, psi_minus)
+- **QFT**: `n_qubits`, `input_state`
 
 ### Validation Requirements
 
-Each solution should include:
-- Clear expected outputs (measurement results, circuit properties, etc.)
-- Methods to verify correctness
-- Performance benchmarks where applicable (circuit depth, gate count, etc.)
+Each solution should enable statistical validation:
+- Use measurement distributions for probabilistic verification
+- Include circuit properties for deterministic verification  
+- Specify tolerance ranges rather than exact values
+- Enable comparison between different implementations using the same parameters
 
 ## General Instructions
 

@@ -1,0 +1,83 @@
+{
+  "problem_id": "bell_state_preparation_parameterized",
+  "prompt": "Create a parameterized Bell state preparation circuit that can generate any of the four Bell states based on the bell_type parameter. Support bell_type values: 'phi_plus', 'phi_minus', 'psi_plus', 'psi_minus'.",
+  "difficulty": "beginner",
+  "category": "circuit_construction",
+  "learning_objectives": [
+    "Bell state preparation",
+    "Entanglement creation",
+    "Parameterized circuits"
+  ],
+  "prerequisites": [
+    "Hadamard gates",
+    "CNOT gates",
+    "Phase gates"
+  ],
+  "reasoning_trace": "Bell states form a maximally entangled basis for two-qubit systems. Each can be systematically prepared: |Φ+⟩ with H+CNOT, |Φ-⟩ adds a Z gate, |Ψ+⟩ adds post-CNOT X gate, |Ψ-⟩ combines both modifications. The resulting states show perfect correlation or anti-correlation in measurements.",
+  "parameter_specs": [
+    {
+      "name": "bell_type",
+      "type": "discrete",
+      "range": [
+        "phi_plus",
+        "phi_minus",
+        "psi_plus",
+        "psi_minus"
+      ],
+      "description": "Type of Bell state to prepare"
+    }
+  ],
+  "test_cases": [
+    {
+      "input_params": {
+        "bell_type": "phi_plus"
+      },
+      "expected_properties": {
+        "entanglement": {
+          "min": 0.9
+        }
+      }
+    },
+    {
+      "input_params": {
+        "bell_type": "phi_minus"
+      },
+      "expected_properties": {
+        "entanglement": {
+          "min": 0.9
+        }
+      }
+    },
+    {
+      "input_params": {
+        "bell_type": "psi_plus"
+      },
+      "expected_properties": {
+        "entanglement": {
+          "min": 0.9
+        }
+      }
+    },
+    {
+      "input_params": {
+        "bell_type": "psi_minus"
+      },
+      "expected_properties": {
+        "entanglement": {
+          "min": 0.9
+        }
+      }
+    }
+  ],
+  "algorithm_type": "bell_state",
+  "evaluation_method": "statistical_comparison",
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nbell_type = params['bell_type']\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\ncircuit = QuantumCircuit(qr, cr)\n\ncircuit.h(qr[0])\n\nif bell_type == 'phi_minus':\n    circuit.z(qr[0])\nelif bell_type == 'psi_minus':\n    circuit.z(qr[0])\n\ncircuit.cx(qr[0], qr[1])\n\nif bell_type in ['psi_plus', 'psi_minus']:\n    circuit.x(qr[1])\n\ncircuit.measure(qr, cr)\n\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()",
+    "output_interpretation": "Bell states show characteristic correlation patterns: Φ states correlate |00⟩ and |11⟩, Ψ states correlate |01⟩ and |10⟩."
+  },
+  "extensions": [
+    "GHZ state preparation",
+    "Bell inequality tests",
+    "Decoherence analysis"
+  ]
+}

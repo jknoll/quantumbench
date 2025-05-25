@@ -1,0 +1,86 @@
+{
+  "problem_id": "grover_algorithm_basic",
+  "prompt": "Implement Grover's algorithm to find a single marked state in a 4-qubit search space.",
+  "difficulty": "beginner",
+  "category": "quantum_algorithms",
+  "learning_objectives": [
+    "Understand the principles of Grover's algorithm",
+    "Implement the Grover operator and iterative search",
+    "Determine the optimal number of Grover iterations"
+  ],
+  "prerequisites": [
+    "Quantum gates and circuit composition",
+    "Measurement and probabilistic outcomes",
+    "Superposition and amplitude amplification"
+  ],
+  "reasoning_trace": "Grover's algorithm is a quantum algorithm that can be used to search an unstructured search space quadratically faster than classical algorithms. The key idea is to use quantum interference to amplify the amplitude of the marked state(s) and suppress the amplitudes of the unmarked states.\n\nFor a 4-qubit search space, there are 2^4 = 16 possible states. We want to find a single marked state using Grover's algorithm. The algorithm consists of two main steps:\n\n1. Prepare the initial state: Start with the equal superposition of all 16 states, which can be achieved by applying Hadamard gates to all 4 qubits.\n\n2. Apply the Grover operator iteratively: The Grover operator consists of two parts - the oracle and the diffusion operator. The oracle marks the target state by flipping its phase. The diffusion operator then amplifies the amplitude of the marked state and suppresses the amplitudes of the unmarked states.\n\nThe number of Grover iterations needed to find the marked state with high probability is approximately pi/4 * sqrt(N), where N is the size of the search space (16 in this case). This gives us about 2 Grover iterations for this problem.\n\nImplementing this in Qiskit, we first create a 4-qubit quantum circuit and apply Hadamard gates to prepare the initial equal superposition state. We then define the oracle function that marks the target state, and apply the Grover operator (oracle followed by diffusion) iteratively. Finally, we measure the qubits to obtain the marked state.",
+  "parameter_specs": [
+    {
+      "name": "marked_state",
+      "type": "discrete",
+      "range": [
+        "0000",
+        "0001",
+        "0010",
+        "0011",
+        "0100",
+        "0101",
+        "0110",
+        "0111",
+        "1000",
+        "1001",
+        "1010",
+        "1011",
+        "1100",
+        "1101",
+        "1110",
+        "1111"
+      ],
+      "description": "The 4-bit binary string representing the marked state to be found"
+    },
+    {
+      "name": "num_iterations",
+      "type": "integer",
+      "range": [
+        1,
+        5
+      ],
+      "description": "The number of Grover iterations to perform"
+    }
+  ],
+  "test_cases": [
+    {
+      "input_params": {
+        "marked_state": "1010",
+        "num_iterations": 2
+      },
+      "expected_properties": {
+        "success_probability": {
+          "min": 0.8
+        }
+      }
+    },
+    {
+      "input_params": {
+        "marked_state": "0111",
+        "num_iterations": 3
+      },
+      "expected_properties": {
+        "success_probability": {
+          "min": 0.8
+        }
+      }
+    }
+  ],
+  "algorithm_type": "grover",
+  "evaluation_method": "statistical_comparison",
+  "solution": {
+    "code": "from qiskit import QuantumCircuit, execute, Aer\n\ndef oracle(qc, params):\n    \"\"\"Oracle that marks the target state.\"\"\"\n    qc.z(qc.qubits[0])\n    if params['marked_state'][0] == '1':\n        qc.z(qc.qubits[0])\n    if params['marked_state'][1] == '1':\n        qc.z(qc.qubits[1])\n    if params['marked_state'][2] == '1':\n        qc.z(qc.qubits[2])\n    if params['marked_state'][3] == '1':\n        qc.z(qc.qubits[3])\n    return qc\n\ndef diffusion(qc):\n    \"\"\"Diffusion operator to amplify the marked state.\"\"\"\n    qc.h([0, 1, 2, 3])\n    qc.x([0, 1, 2, 3])\n    qc.h(0)\n    qc.cx([1, 2, 3], 0)\n    qc.h(0)\n    qc.x([0, 1, 2, 3])\n    qc.h([0, 1, 2, 3])\n    return qc\n\ndef grover(params):\n    \"\"\"Implement Grover's algorithm to find the marked state.\"\"\"\n    qc = QuantumCircuit(4)\n    qc.h([0, 1, 2, 3])  # Prepare equal superposition\n    \n    for _ in range(params['num_iterations']):\n        qc = oracle(qc, params)\n        qc = diffusion(qc)\n    \n    qc.measure_all()\n    backend = Aer.get_backend('qasm_simulator')\n    job = execute(qc, backend, shots=1024)\n    result = job.result()\n    counts = result.get_counts(qc)\n    \n    # Find the most frequent measurement, which is the marked state\n    marked_state = max(counts, key=counts.get)\n    return marked_state\n",
+    "output_interpretation": "The solution implements Grover's algorithm to find the marked state in the 4-qubit search space. The algorithm consists of preparing the initial equal superposition state, applying the Grover operator (oracle and diffusion) iteratively, and then measuring the qubits to obtain the marked state.\n\nThe number of Grover iterations is determined by the 'num_iterations' parameter, which should be set to approximately pi/4 * sqrt(N), where N is the size of the search space (16 in this case).\n\nThe output of the function is the 4-bit binary string representing the marked state that was found. The success probability of finding the marked state should be high (at least 0.8) for the specified number of iterations."
+  },
+  "extensions": [
+    "Extend the problem to larger search spaces (e.g., 6-qubit or 8-qubit)",
+    "Explore the effect of different oracle functions on the algorithm's performance",
+    "Investigate the trade-offs between the number of Grover iterations and success probability"
+  ]
+}

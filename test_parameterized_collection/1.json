@@ -1,0 +1,81 @@
+{
+  "problem_id": "bell_state_parameterized",
+  "prompt": "Create and measure different types of Bell states based on the specified bell_type parameter. Implement a parameterized Bell state preparation circuit that can create any of the four Bell states: |Φ+⟩ = (|00⟩ + |11⟩)/√2, |Φ-⟩ = (|00⟩ - |11⟩)/√2, |Ψ+⟩ = (|01⟩ + |10⟩)/√2, and |Ψ-⟩ = (|01⟩ - |10⟩)/√2. The circuit should accept a bell_type parameter that specifies which Bell state to prepare.",
+  "difficulty": "beginner",
+  "category": "circuit_construction",
+  "learning_objectives": [
+    "Understanding Bell state preparation",
+    "Parameterized quantum circuit construction",
+    "Entanglement verification through measurements",
+    "Statistical analysis of quantum correlations"
+  ],
+  "prerequisites": [
+    "Basic quantum gates (H, X, Z, CNOT)",
+    "Quantum measurement principles",
+    "Entanglement concepts"
+  ],
+  "reasoning_trace": "Bell states are maximally entangled two-qubit quantum states that form a complete orthonormal basis for the two-qubit Hilbert space. The four Bell states can be systematically prepared using different combinations of single-qubit gates applied before or after the entangling CNOT operation. The |Φ+⟩ state is created with H + CNOT, |Φ-⟩ adds a Z gate, |Ψ+⟩ adds an X gate, and |Ψ-⟩ adds both X and Z gates. Each Bell state exhibits perfect correlation or anti-correlation in measurement outcomes, which can be verified statistically by measuring both qubits in the computational basis and analyzing the resulting probability distributions.",
+  
+  "parameter_specs": [
+    {
+      "name": "bell_type",
+      "type": "discrete",
+      "range": ["phi_plus", "phi_minus", "psi_plus", "psi_minus"],
+      "description": "Specifies which of the four Bell states to prepare"
+    }
+  ],
+  
+  "test_cases": [
+    {
+      "input_params": {
+        "bell_type": "phi_plus"
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 5},
+        "entanglement": {"min": 0.9}
+      }
+    },
+    {
+      "input_params": {
+        "bell_type": "phi_minus"
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 6},
+        "entanglement": {"min": 0.9}
+      }
+    },
+    {
+      "input_params": {
+        "bell_type": "psi_plus"
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 6},
+        "entanglement": {"min": 0.9}
+      }
+    },
+    {
+      "input_params": {
+        "bell_type": "psi_minus"
+      },
+      "expected_properties": {
+        "circuit_depth": {"max": 7},
+        "entanglement": {"min": 0.9}
+      }
+    }
+  ],
+  
+  "algorithm_type": "bell_state",
+  "evaluation_method": "statistical_comparison",
+  
+  "solution": {
+    "code": "import numpy as np\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile\nfrom qiskit_aer import AerSimulator\n\ndef create_bell_state_circuit(bell_type):\n    \"\"\"Create a parameterized Bell state preparation circuit.\"\"\"\n    qr = QuantumRegister(2, 'q')\n    cr = ClassicalRegister(2, 'c')\n    circuit = QuantumCircuit(qr, cr)\n    \n    # All Bell states start with Hadamard on first qubit\n    circuit.h(qr[0])\n    \n    # Apply specific gates based on Bell state type\n    if bell_type == 'phi_plus':\n        # |Φ+⟩ = (|00⟩ + |11⟩)/√2\n        # H + CNOT\n        pass  # No additional gates needed\n    elif bell_type == 'phi_minus':\n        # |Φ-⟩ = (|00⟩ - |11⟩)/√2  \n        # H + Z + CNOT\n        circuit.z(qr[0])\n    elif bell_type == 'psi_plus':\n        # |Ψ+⟩ = (|01⟩ + |10⟩)/√2\n        # H + CNOT + X\n        pass  # X will be applied after CNOT\n    elif bell_type == 'psi_minus':\n        # |Ψ-⟩ = (|01⟩ - |10⟩)/√2\n        # H + Z + CNOT + X\n        circuit.z(qr[0])\n    \n    # Apply CNOT to create entanglement\n    circuit.cx(qr[0], qr[1])\n    \n    # Apply X gate after CNOT for Ψ states\n    if bell_type in ['psi_plus', 'psi_minus']:\n        circuit.x(qr[1])\n    \n    # Measure both qubits\n    circuit.measure(qr, cr)\n    \n    return circuit\n\n# Extract parameter from global params variable\nbell_type = params['bell_type']\n\n# Create and execute the circuit\ncircuit = create_bell_state_circuit(bell_type)\nsimulator = AerSimulator()\njob = simulator.run(circuit, shots=shots)\nresult = job.result()\ncounts = result.get_counts()\n\n# Calculate correlation metrics\ntotal_shots = sum(counts.values())\ncorrelated_outcomes = counts.get('00', 0) + counts.get('11', 0)\nanti_correlated_outcomes = counts.get('01', 0) + counts.get('10', 0)\n\ncorrelation_strength = abs(correlated_outcomes - anti_correlated_outcomes) / total_shots\n\nprint(f'Bell state type: {bell_type}')\nprint(f'Measurement counts: {counts}')\nprint(f'Correlation strength: {correlation_strength:.3f}')\nprint(f'Circuit depth: {circuit.depth()}')",
+    "output_interpretation": "The Bell state should show strong correlation or anti-correlation in measurement outcomes. For Φ states, expect high counts in |00⟩ and |11⟩. For Ψ states, expect high counts in |01⟩ and |10⟩. The correlation strength should be close to 1.0, indicating perfect entanglement."
+  },
+  
+  "extensions": [
+    "Extend to three-qubit GHZ states",
+    "Add Bell state tomography for full state verification", 
+    "Implement Bell inequality tests",
+    "Create parameterized multi-qubit entangled states"
+  ]
+}

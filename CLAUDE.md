@@ -24,7 +24,7 @@ This project runs inside of a Python virtualenv environment, which is defined in
 ```
 
 ## Dependencies
-Be sure that the virtual environment is activated as indicated above. For any new dependencies, be sure to add them to the requirements.txt file and install them using `pip install -r requirements.txt`. Do not install them using pip install [dependency]. Always use the requirements.txt file.
+Be sure that the virtual environment is activated as indicated above. For any new dependencies, be sure to add them to the requirements.txt file and install them from within the virtualenvironment using `pip install -r requirements.txt`. Do not install them using pip install [dependency]. Always use the requirements.txt file.
 
 ## Testing
 For all new functionality, create pytest tests within the `tests/` directory. For modifications to existing functionality, ensure that regression tests exist to verify correct behavior. 
@@ -83,6 +83,21 @@ python 2.py  # Run the second generated example
 ```
 
 ### Validate Dataset
+
+#### Parameterized Validation (Recommended)
+```bash
+source .qiskit/bin/activate
+
+# Automatically detects legacy or parameterized format
+python parameterized_validation.py [dataset_file_or_directory.json]
+
+# Examples:
+python parameterized_validation.py datasets/claude_sonnet_4_20250524_123456/1.json
+python parameterized_validation.py test_parameterized_dataset.json
+python parameterized_validation.py datasets/claude_sonnet_4_20250524_123456/
+```
+
+#### Legacy Validation (Backward Compatibility)
 ```bash
 source .qiskit/bin/activate
 python validate_dataset.py [dataset_file.json]
@@ -122,6 +137,35 @@ generator.save_datasets_collection(datasets)
 "
 ```
 
+### Parameterized Testing Framework
+
+The project now includes a sophisticated parameterized testing system for implementation-independent validation:
+
+```bash
+source .qiskit/bin/activate
+
+# Test the parameterized testing framework
+python parameter_testing_framework.py
+
+# Run demonstration of implementation equivalence testing
+python demo_parameterized_testing.py
+
+# Create parameterized test datasets
+python -c "
+from parameter_testing_framework import create_parameterized_dataset_schema
+import json
+schema = create_parameterized_dataset_schema()
+print(json.dumps(schema, indent=2))
+"
+```
+
+**Key Features:**
+- **Algorithm-Agnostic**: Supports Grover's, Bell states, QFT, and custom algorithms
+- **Statistical Validation**: Uses measurement distribution comparison instead of exact matching
+- **Parameter Generation**: Automatically generates test parameters for thorough validation
+- **LLM Evaluation Ready**: Perfect for evaluating fine-tuned model outputs against reference implementations
+- **Backward Compatible**: Seamlessly handles both legacy and parameterized datasets
+
 ### Run Tests
 ```bash
 source .qiskit/bin/activate
@@ -131,3 +175,4 @@ python test_generate_dataset.py
 ## Notes
 - This is a Python project
 - Dependencies are managed via requirements.txt
+- **Milestone 11 Complete**: Parameterized testing enables implementation-independent correctness validation for fine-tuning datasets
